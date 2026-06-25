@@ -1,6 +1,11 @@
 import { useState } from "react";
 import "./App.css";
 
+import Header from "./components/Header";
+import StatsCard from "./components/StatsCard";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+
 function App() {
   const [tasks, setTasks] = useState([
     {
@@ -61,73 +66,25 @@ function App() {
   return (
     <main className="app">
       <section className="dashboard">
-        <div className="header">
-          <p className="eyebrow">AWS Serverless Project</p>
-          <h1>Task Dashboard</h1>
-          <p className="subtitle">
-            A frontend task manager that will later connect to API Gateway,
-            Lambda, and DynamoDB.
-          </p>
-        </div>
+        <Header />
 
         <div className="stats-grid">
-          <div className="stat-card">
-            <span>Total Tasks</span>
-            <strong>{totalTasks}</strong>
-          </div>
-
-          <div className="stat-card">
-            <span>Completed</span>
-            <strong>{completedTasks}</strong>
-          </div>
-
-          <div className="stat-card">
-            <span>To Do</span>
-            <strong>{todoTasks}</strong>
-          </div>
+          <StatsCard label="Total Tasks" value={totalTasks} />
+          <StatsCard label="Completed" value={completedTasks} />
+          <StatsCard label="To Do" value={todoTasks} />
         </div>
 
-        <form className="task-form" onSubmit={handleAddTask}>
-          <input
-            type="text"
-            placeholder="Enter a new task..."
-            value={newTaskTitle}
-            onChange={(event) => setNewTaskTitle(event.target.value)}
-          />
-          <button type="submit">Add Task</button>
-        </form>
+        <TaskForm
+          newTaskTitle={newTaskTitle}
+          setNewTaskTitle={setNewTaskTitle}
+          onAddTask={handleAddTask}
+        />
 
-        <section className="task-list">
-          <h2>Tasks</h2>
-
-          {tasks.length === 0 ? (
-            <p className="empty-message">No tasks yet. Add one above.</p>
-          ) : (
-            tasks.map((task) => (
-              <article className="task-item" key={task.id}>
-                <div>
-                  <h3 className={task.status === "done" ? "completed" : ""}>
-                    {task.title}
-                  </h3>
-                  <p>Status: {task.status}</p>
-                </div>
-
-                <div className="task-actions">
-                  <button onClick={() => handleToggleComplete(task.id)}>
-                    {task.status === "done" ? "Undo" : "Complete"}
-                  </button>
-
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteTask(task.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </article>
-            ))
-          )}
-        </section>
+        <TaskList
+          tasks={tasks}
+          onToggleComplete={handleToggleComplete}
+          onDeleteTask={handleDeleteTask}
+        />
       </section>
     </main>
   );
