@@ -120,7 +120,10 @@ h1 {
   color: white;
 }
 
-.search-bar {
+.controls-row {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
@@ -135,6 +138,33 @@ h1 {
 }
 
 .search-bar input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.sort-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sort-control label {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sort-control select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.sort-control select:focus {
   outline: none;
   border-color: #2563eb;
 }
@@ -241,6 +271,10 @@ h1 {
 
   .filter-bar {
     flex-direction: column;
+  }
+
+  .controls-row {
+    grid-template-columns: 1fr;
   }
 
   .task-item {

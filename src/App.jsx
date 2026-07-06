@@ -25,6 +25,12 @@ const DEFAULT_TASKS = [
   },
 ];
 
+const PRIORITY_ORDER = {
+  low: 1,
+  medium: 2,
+  high: 3,
+};
+
 function App() {
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
@@ -40,6 +46,7 @@ function App() {
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
 
   useEffect(() => {
     localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
@@ -92,7 +99,7 @@ function App() {
     (task) => task.priority === "high"
   ).length;
 
-  const displayedTasks = tasks
+  const filteredAndSearchedTasks = tasks
     .filter((task) => {
       if (activeFilter === "todo") {
         return task.status === "todo";
@@ -111,6 +118,36 @@ function App() {
     .filter((task) =>
       task.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  const displayedTasks = [...filteredAndSearchedTasks].sort((taskA, taskB) => {
+    if (sortOption === "newest") {
+      return new Date(taskB.createdAt) - new Date(taskA.createdAt);
+    }
+
+    if (sortOption === "oldest") {
+      return new Date(taskA.createdAt) - new Date(taskB.createdAt);
+    }
+
+    if (sortOption === "priority-high") {
+      return (
+        PRIORITY_ORDER[taskB.priority || "medium"] -
+        PRIORITY_ORDER[taskA.priority || "medium"]
+      );
+    }
+
+    if (sortOption === "priority-low") {
+      return (
+        PRIORITY_ORDER[taskA.priority || "medium"] -
+        PRIORITY_ORDER[taskB.priority || "medium"]
+      );
+    }
+
+    if (sortOption === "title-az") {
+      return taskA.title.localeCompare(taskB.title);
+    }
+
+    return 0;
+  });
 
   return (
     <main className="app">
@@ -162,13 +199,30 @@ function App() {
           </button>
         </div>
 
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search tasks..."
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
+        <div className="controls-row">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+            />
+          </div>
+
+          <div className="sort-control">
+            <label htmlFor="sort-tasks">Sort by</label>
+            <select
+              id="sort-tasks"
+              value={sortOption}
+              onChange={(event) => setSortOption(event.target.value)}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="priority-high">Priority: high to low</option>
+              <option value="priority-low">Priority: low to high</option>
+              <option value="title-az">Title A–Z</option>
+            </select>
+          </div>
         </div>
 
         <TaskList
