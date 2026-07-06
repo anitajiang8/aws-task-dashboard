@@ -13,11 +13,15 @@ const DEFAULT_TASKS = [
     id: 1,
     title: "Complete AWS CRUD tutorial",
     status: "done",
+    priority: "high",
+    createdAt: new Date().toISOString(),
   },
   {
     id: 2,
     title: "Build frontend task dashboard",
     status: "todo",
+    priority: "medium",
+    createdAt: new Date().toISOString(),
   },
 ];
 
@@ -33,6 +37,7 @@ function App() {
   });
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState("medium");
 
   useEffect(() => {
     localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
@@ -49,10 +54,13 @@ function App() {
       id: Date.now(),
       title: newTaskTitle,
       status: "todo",
+      priority: newTaskPriority,
+      createdAt: new Date().toISOString(),
     };
 
     setTasks([...tasks, newTask]);
     setNewTaskTitle("");
+    setNewTaskPriority("medium");
   }
 
   function handleToggleComplete(taskId) {
@@ -78,6 +86,9 @@ function App() {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === "done").length;
   const todoTasks = tasks.filter((task) => task.status === "todo").length;
+  const highPriorityTasks = tasks.filter(
+    (task) => task.priority === "high"
+  ).length;
 
   return (
     <main className="app">
@@ -88,11 +99,14 @@ function App() {
           <StatsCard label="Total Tasks" value={totalTasks} />
           <StatsCard label="Completed" value={completedTasks} />
           <StatsCard label="To Do" value={todoTasks} />
+          <StatsCard label="High Priority" value={highPriorityTasks} />
         </div>
 
         <TaskForm
           newTaskTitle={newTaskTitle}
           setNewTaskTitle={setNewTaskTitle}
+          newTaskPriority={newTaskPriority}
+          setNewTaskPriority={setNewTaskPriority}
           onAddTask={handleAddTask}
         />
 

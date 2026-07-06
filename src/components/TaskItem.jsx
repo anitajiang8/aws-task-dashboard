@@ -1,11 +1,26 @@
 function TaskItem({ task, onToggleComplete, onDeleteTask }) {
+  const priority = task.priority || "medium";
+
   return (
     <article className="task-item">
       <div>
-        <h3 className={task.status === "done" ? "completed" : ""}>
-          {task.title}
-        </h3>
+        <div className="task-title-row">
+          <h3 className={task.status === "done" ? "completed" : ""}>
+            {task.title}
+          </h3>
+
+          <span className={`priority-badge ${priority}`}>
+            {priority}
+          </span>
+        </div>
+
         <p>Status: {task.status}</p>
+
+        {task.createdAt && (
+          <p className="created-date">
+            Created: {new Date(task.createdAt).toLocaleDateString()}
+          </p>
+        )}
       </div>
 
       <div className="task-actions">
