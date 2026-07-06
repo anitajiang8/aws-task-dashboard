@@ -38,6 +38,7 @@ function App() {
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
+  const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
     localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
@@ -90,6 +91,22 @@ function App() {
     (task) => task.priority === "high"
   ).length;
 
+  const filteredTasks = tasks.filter((task) => {
+    if (activeFilter === "todo") {
+      return task.status === "todo";
+    }
+
+    if (activeFilter === "done") {
+      return task.status === "done";
+    }
+
+    if (activeFilter === "high") {
+      return task.priority === "high";
+    }
+
+    return true;
+  });
+
   return (
     <main className="app">
       <section className="dashboard">
@@ -110,8 +127,38 @@ function App() {
           onAddTask={handleAddTask}
         />
 
+        <div className="filter-bar">
+          <button
+            className={activeFilter === "all" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("all")}
+          >
+            All
+          </button>
+
+          <button
+            className={activeFilter === "todo" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("todo")}
+          >
+            To Do
+          </button>
+
+          <button
+            className={activeFilter === "done" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("done")}
+          >
+            Completed
+          </button>
+
+          <button
+            className={activeFilter === "high" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("high")}
+          >
+            High Priority
+          </button>
+        </div>
+
         <TaskList
-          tasks={tasks}
+          tasks={filteredTasks}
           onToggleComplete={handleToggleComplete}
           onDeleteTask={handleDeleteTask}
         />
