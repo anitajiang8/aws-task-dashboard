@@ -39,6 +39,7 @@ function App() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
@@ -91,21 +92,25 @@ function App() {
     (task) => task.priority === "high"
   ).length;
 
-  const filteredTasks = tasks.filter((task) => {
-    if (activeFilter === "todo") {
-      return task.status === "todo";
-    }
+  const displayedTasks = tasks
+    .filter((task) => {
+      if (activeFilter === "todo") {
+        return task.status === "todo";
+      }
 
-    if (activeFilter === "done") {
-      return task.status === "done";
-    }
+      if (activeFilter === "done") {
+        return task.status === "done";
+      }
 
-    if (activeFilter === "high") {
-      return task.priority === "high";
-    }
+      if (activeFilter === "high") {
+        return task.priority === "high";
+      }
 
-    return true;
-  });
+      return true;
+    })
+    .filter((task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
     <main className="app">
@@ -157,8 +162,17 @@ function App() {
           </button>
         </div>
 
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+        </div>
+
         <TaskList
-          tasks={filteredTasks}
+          tasks={displayedTasks}
           onToggleComplete={handleToggleComplete}
           onDeleteTask={handleDeleteTask}
         />

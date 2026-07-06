@@ -120,6 +120,25 @@ h1 {
   color: white;
 }
 
+.search-bar {
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
 .task-list {
   background: white;
   border-radius: 16px;
