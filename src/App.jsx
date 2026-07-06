@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import Header from "./components/Header";
@@ -6,21 +6,37 @@ import StatsCard from "./components/StatsCard";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 
+const TASKS_STORAGE_KEY = "aws-task-dashboard-tasks";
+
+const DEFAULT_TASKS = [
+  {
+    id: 1,
+    title: "Complete AWS CRUD tutorial",
+    status: "done",
+  },
+  {
+    id: 2,
+    title: "Build frontend task dashboard",
+    status: "todo",
+  },
+];
+
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Complete AWS CRUD tutorial",
-      status: "done",
-    },
-    {
-      id: 2,
-      title: "Build frontend task dashboard",
-      status: "todo",
-    },
-  ]);
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+
+    if (savedTasks) {
+      return JSON.parse(savedTasks);
+    }
+
+    return DEFAULT_TASKS;
+  });
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+  }, [tasks]);
 
   function handleAddTask(event) {
     event.preventDefault();
