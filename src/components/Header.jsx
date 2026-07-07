@@ -1,13 +1,13 @@
 function Header() {
   return (
-    <div className="header">
-      <p className="eyebrow">AWS Serverless Project</p>
-      <h1>Task Dashboard</h1>
+    <header className="header">
+      <p className="eyebrow">React + AWS learning project</p>
+      <h1>Purrductivity</h1>
       <p className="subtitle">
-        A frontend task manager that will later connect to API Gateway, Lambda,
-        and DynamoDB.
+        A soft, gamified task dashboard where completing quests earns XP,
+        treats, and progress for your cat companion.
       </p>
-    </div>
+    </header>
   );
 }
 

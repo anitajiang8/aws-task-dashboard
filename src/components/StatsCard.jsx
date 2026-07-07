@@ -1,8 +1,13 @@
-function StatsCard({ label, value }) {
+function StatsCard({ icon, label, value, helper }) {
   return (
     <div className="stat-card">
-      <span>{label}</span>
-      <strong>{value}</strong>
+      <div className="stat-icon">{icon}</div>
+
+      <div>
+        <span>{label}</span>
+        <strong>{value}</strong>
+        {helper && <p>{helper}</p>}
+      </div>
     </div>
   );
 }

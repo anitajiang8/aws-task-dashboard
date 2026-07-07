@@ -1,29 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+import CatCompanion from "./components/CatCompanion";
 import Header from "./components/Header";
 import StatsCard from "./components/StatsCard";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 
 const TASKS_STORAGE_KEY = "aws-task-dashboard-tasks";
-
-const DEFAULT_TASKS = [
-  {
-    id: 1,
-    title: "Complete AWS CRUD tutorial",
-    status: "done",
-    priority: "high",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    title: "Build frontend task dashboard",
-    status: "todo",
-    priority: "medium",
-    createdAt: new Date().toISOString(),
-  },
-];
+const CAT_PROFILE_STORAGE_KEY = "purrductivity-cat-profile";
 
 const PRIORITY_ORDER = {
   low: 1,
@@ -31,16 +16,105 @@ const PRIORITY_ORDER = {
   high: 3,
 };
 
-function App() {
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+const PRIORITY_REWARDS = {
+  low: 5,
+  medium: 10,
+  high: 15,
+};
 
-    if (savedTasks) {
-      return JSON.parse(savedTasks);
+const DEFAULT_TASKS = [
+  {
+    id: 1,
+    title: "Plan a cosy study session",
+    status: "todo",
+    priority: "medium",
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    rewardXp: 10,
+    rewardClaimed: false,
+  },
+  {
+    id: 2,
+    title: "Finish one high-priority task",
+    status: "todo",
+    priority: "high",
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    rewardXp: 15,
+    rewardClaimed: false,
+  },
+];
+
+const DEFAULT_CAT_PROFILE = {
+  catName: "Mochi",
+  totalXp: 0,
+  treats: 0,
+};
+
+function getTaskRewardXp(priority) {
+  return PRIORITY_REWARDS[priority] || PRIORITY_REWARDS.medium;
+}
+
+function normaliseTask(task) {
+  const priority = task.priority || "medium";
+  const status = task.status === "done" ? "done" : "todo";
+
+  return {
+    id: task.id || Date.now(),
+    title: task.title || "Untitled task",
+    status,
+    priority,
+    createdAt: task.createdAt || new Date().toISOString(),
+    completedAt:
+      task.completedAt || (status === "done" ? new Date().toISOString() : null),
+    rewardXp: task.rewardXp || getTaskRewardXp(priority),
+    rewardClaimed: Boolean(task.rewardClaimed),
+  };
+}
+
+function loadSavedTasks() {
+  const savedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+
+  if (!savedTasks) {
+    return DEFAULT_TASKS;
+  }
+
+  try {
+    const parsedTasks = JSON.parse(savedTasks);
+
+    if (!Array.isArray(parsedTasks)) {
+      return DEFAULT_TASKS;
     }
 
+    return parsedTasks.map(normaliseTask);
+  } catch {
     return DEFAULT_TASKS;
-  });
+  }
+}
+
+function loadSavedCatProfile() {
+  const savedProfile = localStorage.getItem(CAT_PROFILE_STORAGE_KEY);
+
+  if (!savedProfile) {
+    return DEFAULT_CAT_PROFILE;
+  }
+
+  try {
+    const parsedProfile = JSON.parse(savedProfile);
+
+    return {
+      catName: parsedProfile.catName || DEFAULT_CAT_PROFILE.catName,
+      totalXp: parsedProfile.totalXp || 0,
+      treats: parsedProfile.treats || 0,
+    };
+  } catch {
+    return DEFAULT_CAT_PROFILE;
+  }
+}
+
+function App() {
+  const [tasks, setTasks] = useState(() => loadSavedTasks());
+  const [catProfile, setCatProfile] = useState(() => loadSavedCatProfile());
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
@@ -52,6 +126,10 @@ function App() {
     localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]);
 
+  useEffect(() => {
+    localStorage.setItem(CAT_PROFILE_STORAGE_KEY, JSON.stringify(catProfile));
+  }, [catProfile]);
+
   function handleAddTask(event) {
     event.preventDefault();
 
@@ -59,12 +137,17 @@ function App() {
       return;
     }
 
+    const rewardXp = getTaskRewardXp(newTaskPriority);
+
     const newTask = {
       id: Date.now(),
       title: newTaskTitle,
       status: "todo",
       priority: newTaskPriority,
       createdAt: new Date().toISOString(),
+      completedAt: null,
+      rewardXp,
+      rewardClaimed: false,
     };
 
     setTasks([...tasks, newTask]);
@@ -72,12 +155,47 @@ function App() {
     setNewTaskPriority("medium");
   }
 
-  function handleToggleComplete(taskId) {
+  function handleCompleteTask(taskId) {
+    const taskToComplete = tasks.find((task) => task.id === taskId);
+
+    if (!taskToComplete || taskToComplete.status === "done") {
+      return;
+    }
+
+    const rewardXp = taskToComplete.rewardXp || getTaskRewardXp(taskToComplete.priority);
+
+    if (!taskToComplete.rewardClaimed) {
+      setCatProfile((currentProfile) => ({
+        ...currentProfile,
+        totalXp: currentProfile.totalXp + rewardXp,
+        treats: currentProfile.treats + Math.max(1, Math.round(rewardXp / 5)),
+      }));
+    }
+
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
         return {
           ...task,
-          status: task.status === "done" ? "todo" : "done",
+          status: "done",
+          completedAt: new Date().toISOString(),
+          rewardXp,
+          rewardClaimed: true,
+        };
+      }
+
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  }
+
+  function handleRestoreTask(taskId) {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          status: "todo",
+          completedAt: null,
         };
       }
 
@@ -92,25 +210,28 @@ function App() {
     setTasks(remainingTasks);
   }
 
+  const activeTasks = tasks.filter((task) => task.status !== "done");
+  const completedTasks = tasks.filter((task) => task.status === "done");
+
   const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.status === "done").length;
-  const todoTasks = tasks.filter((task) => task.status === "todo").length;
-  const highPriorityTasks = tasks.filter(
+  const activeTaskCount = activeTasks.length;
+  const completedTaskCount = completedTasks.length;
+  const highPriorityTasks = activeTasks.filter(
     (task) => task.priority === "high"
   ).length;
 
-  const filteredAndSearchedTasks = tasks
+  const filteredAndSearchedTasks = activeTasks
     .filter((task) => {
-      if (activeFilter === "todo") {
-        return task.status === "todo";
-      }
-
-      if (activeFilter === "done") {
-        return task.status === "done";
-      }
-
       if (activeFilter === "high") {
         return task.priority === "high";
+      }
+
+      if (activeFilter === "medium") {
+        return task.priority === "medium";
+      }
+
+      if (activeFilter === "low") {
+        return task.priority === "low";
       }
 
       return true;
@@ -149,16 +270,56 @@ function App() {
     return 0;
   });
 
+  const completedHistory = [...completedTasks].sort((taskA, taskB) => {
+    return new Date(taskB.completedAt) - new Date(taskA.completedAt);
+  });
+
   return (
     <main className="app">
       <section className="dashboard">
         <Header />
 
+        <div className="hero-grid">
+          <CatCompanion
+            catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
+          />
+
+          <section className="focus-card">
+            <p className="card-kicker">Today&apos;s cosy quest</p>
+            <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
+            <p>
+              Complete active tasks to collect XP. Finished tasks move into your
+              history, so your current list stays calm and focused.
+            </p>
+          </section>
+        </div>
+
         <div className="stats-grid">
-          <StatsCard label="Total Tasks" value={totalTasks} />
-          <StatsCard label="Completed" value={completedTasks} />
-          <StatsCard label="To Do" value={todoTasks} />
-          <StatsCard label="High Priority" value={highPriorityTasks} />
+          <StatsCard
+            icon="🌸"
+            label="Total Quests"
+            value={totalTasks}
+            helper="All tasks created"
+          />
+          <StatsCard
+            icon="🧁"
+            label="Active"
+            value={activeTaskCount}
+            helper="Still waiting for you"
+          />
+          <StatsCard
+            icon="✨"
+            label="Completed"
+            value={completedTaskCount}
+            helper="Moved to history"
+          />
+          <StatsCard
+            icon="🎀"
+            label="High Priority"
+            value={highPriorityTasks}
+            helper="Needs extra focus"
+          />
         </div>
 
         <TaskForm
@@ -174,21 +335,7 @@ function App() {
             className={activeFilter === "all" ? "active-filter" : ""}
             onClick={() => setActiveFilter("all")}
           >
-            All
-          </button>
-
-          <button
-            className={activeFilter === "todo" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("todo")}
-          >
-            To Do
-          </button>
-
-          <button
-            className={activeFilter === "done" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("done")}
-          >
-            Completed
+            All Active
           </button>
 
           <button
@@ -197,20 +344,34 @@ function App() {
           >
             High Priority
           </button>
+
+          <button
+            className={activeFilter === "medium" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("medium")}
+          >
+            Medium
+          </button>
+
+          <button
+            className={activeFilter === "low" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("low")}
+          >
+            Low
+          </button>
         </div>
 
         <div className="controls-row">
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Search tasks..."
+              placeholder="Search active tasks..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
 
           <div className="sort-control">
-            <label htmlFor="sort-tasks">Sort by</label>
+            <label htmlFor="sort-tasks">Sort active tasks</label>
             <select
               id="sort-tasks"
               value={sortOption}
@@ -226,8 +387,22 @@ function App() {
         </div>
 
         <TaskList
+          title="Active Tasks"
+          subtitle="Complete tasks to earn XP and send them to your cosy history."
           tasks={displayedTasks}
-          onToggleComplete={handleToggleComplete}
+          emptyMessage="No active tasks here. Add a new quest above!"
+          variant="active"
+          onCompleteTask={handleCompleteTask}
+          onDeleteTask={handleDeleteTask}
+        />
+
+        <TaskList
+          title="Completed History"
+          subtitle="A little archive of everything you have already finished."
+          tasks={completedHistory}
+          emptyMessage="No completed tasks yet. Mochi is waiting for treats."
+          variant="completed"
+          onRestoreTask={handleRestoreTask}
           onDeleteTask={handleDeleteTask}
         />
       </section>
