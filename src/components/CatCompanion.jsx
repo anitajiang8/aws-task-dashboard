@@ -12,15 +12,72 @@ function CatCompanion({ catProfile, completedTaskCount }) {
           <h2>{catProfile.catName}</h2>
         </div>
 
-        <div className="cat-avatar" aria-label="Cute cat avatar">
-          🐱
+        <div className="cat-avatar" aria-label="Cute cat icon">
+          🐾
         </div>
       </div>
 
       <div className="cat-room">
-        <div className="cat-sticker">🌷</div>
-        <div className="cat-character">ฅ^•ﻌ•^ฅ</div>
-        <div className="cat-sticker">🧶</div>
+        <span className="floating-sparkle sparkle-one">✦</span>
+        <span className="floating-sparkle sparkle-two">♡</span>
+        <span className="floating-sparkle sparkle-three">✧</span>
+
+        <div
+          className="animated-cat"
+          role="img"
+          aria-label="Animated pastel cat companion"
+        >
+          <div className="cat-shadow"></div>
+
+          <div className="cat-tail">
+            <div className="tail-tip"></div>
+          </div>
+
+          <div className="cat-body">
+            <div className="cat-belly"></div>
+            <div className="cat-paw cat-paw-left"></div>
+            <div className="cat-paw cat-paw-right"></div>
+          </div>
+
+          <div className="cat-head">
+            <div className="cat-ear cat-ear-left">
+              <div className="cat-ear-inner"></div>
+            </div>
+
+            <div className="cat-ear cat-ear-right">
+              <div className="cat-ear-inner"></div>
+            </div>
+
+            <div className="cat-bow">
+              <span className="bow-left"></span>
+              <span className="bow-center"></span>
+              <span className="bow-right"></span>
+            </div>
+
+            <div className="cat-face">
+              <div className="cat-eye cat-eye-left">
+                <span className="eye-sparkle eye-sparkle-large"></span>
+                <span className="eye-sparkle eye-sparkle-small"></span>
+              </div>
+
+              <div className="cat-eye cat-eye-right">
+                <span className="eye-sparkle eye-sparkle-large"></span>
+                <span className="eye-sparkle eye-sparkle-small"></span>
+              </div>
+
+              <div className="cat-cheek cat-cheek-left"></div>
+              <div className="cat-cheek cat-cheek-right"></div>
+
+              <div className="cat-nose"></div>
+              <div className="cat-mouth"></div>
+
+              <div className="cat-whisker cat-whisker-left-one"></div>
+              <div className="cat-whisker cat-whisker-left-two"></div>
+              <div className="cat-whisker cat-whisker-right-one"></div>
+              <div className="cat-whisker cat-whisker-right-two"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="xp-section">
