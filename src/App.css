@@ -289,12 +289,12 @@ h2 {
 }
 
 .cat-ear::before {
-  left: 10px;
+  left: 2px;
   transform: rotate(27deg);
 }
 
 .cat-ear::after {
-  right: 10px;
+  right: 2px;
   transform: rotate(-27deg);
 }
 
@@ -421,7 +421,7 @@ h2 {
 
 .cat-cheek {
   position: absolute;
-  top: 68px;
+  top: 71px;
   width: 21px;
   height: 13px;
   border-radius: 999px;
