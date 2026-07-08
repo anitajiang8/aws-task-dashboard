@@ -154,6 +154,11 @@ function DashboardPage({
   handleCompleteTask,
   handleDeleteTask,
 }) {
+  const activeEmptyMessage =
+    activeTaskCount === 0
+      ? "No active tasks here. Add a new quest above!"
+      : "No active tasks match your current filter or search. Try All Active.";
+
   return (
     <main className="app">
       <MiniTopNav />
@@ -273,7 +278,7 @@ function DashboardPage({
           title="Active Tasks"
           subtitle="Complete tasks to earn XP and send them to your cosy archive."
           tasks={displayedTasks}
-          emptyMessage="No active tasks here. Add a new quest above!"
+          emptyMessage={activeEmptyMessage}
           variant="active"
           onCompleteTask={handleCompleteTask}
           onDeleteTask={handleDeleteTask}
