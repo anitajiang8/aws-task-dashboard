@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, Route, Routes } from "react-router";
 import "./App.css";
 
 import CatCompanion from "./components/CatCompanion";
@@ -112,6 +113,217 @@ function loadSavedCatProfile() {
   }
 }
 
+function DashboardPage({
+  catProfile,
+  totalTasks,
+  activeTaskCount,
+  completedTaskCount,
+  highPriorityTasks,
+  newTaskTitle,
+  setNewTaskTitle,
+  newTaskPriority,
+  setNewTaskPriority,
+  handleAddTask,
+  activeFilter,
+  setActiveFilter,
+  searchQuery,
+  setSearchQuery,
+  sortOption,
+  setSortOption,
+  displayedTasks,
+  handleCompleteTask,
+  handleDeleteTask,
+}) {
+  return (
+    <main className="app">
+      <section className="dashboard">
+        <Header />
+
+        <div className="hero-grid">
+          <CatCompanion
+            catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
+          />
+
+          <section className="focus-card">
+            <p className="card-kicker">Today&apos;s cosy quest</p>
+            <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
+            <p>
+              Complete active tasks to collect XP. Finished tasks now live in
+              their own archive page, so your main dashboard stays calm and
+              focused.
+            </p>
+
+            <div className="hero-actions">
+              <Link className="cute-link-button" to="/archive">
+                View Completed Archive
+              </Link>
+            </div>
+          </section>
+        </div>
+
+        <div className="stats-grid">
+          <StatsCard
+            icon="🌸"
+            label="Total Quests"
+            value={totalTasks}
+            helper="All tasks created"
+          />
+          <StatsCard
+            icon="🧁"
+            label="Active"
+            value={activeTaskCount}
+            helper="Still waiting for you"
+          />
+          <StatsCard
+            icon="✨"
+            label="Completed"
+            value={completedTaskCount}
+            helper="Saved in archive"
+          />
+          <StatsCard
+            icon="🎀"
+            label="High Priority"
+            value={highPriorityTasks}
+            helper="Needs extra focus"
+          />
+        </div>
+
+        <TaskForm
+          newTaskTitle={newTaskTitle}
+          setNewTaskTitle={setNewTaskTitle}
+          newTaskPriority={newTaskPriority}
+          setNewTaskPriority={setNewTaskPriority}
+          onAddTask={handleAddTask}
+        />
+
+        <div className="filter-bar">
+          <button
+            className={activeFilter === "all" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("all")}
+          >
+            All Active
+          </button>
+
+          <button
+            className={activeFilter === "high" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("high")}
+          >
+            High Priority
+          </button>
+
+          <button
+            className={activeFilter === "medium" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("medium")}
+          >
+            Medium
+          </button>
+
+          <button
+            className={activeFilter === "low" ? "active-filter" : ""}
+            onClick={() => setActiveFilter("low")}
+          >
+            Low
+          </button>
+        </div>
+
+        <div className="controls-row">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search active tasks..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+            />
+          </div>
+
+          <div className="sort-control">
+            <label htmlFor="sort-tasks">Sort active tasks</label>
+            <select
+              id="sort-tasks"
+              value={sortOption}
+              onChange={(event) => setSortOption(event.target.value)}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="priority-high">Priority: high to low</option>
+              <option value="priority-low">Priority: low to high</option>
+              <option value="title-az">Title A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <TaskList
+          title="Active Tasks"
+          subtitle="Complete tasks to earn XP and send them to your cosy archive."
+          tasks={displayedTasks}
+          emptyMessage="No active tasks here. Add a new quest above!"
+          variant="active"
+          onCompleteTask={handleCompleteTask}
+          onDeleteTask={handleDeleteTask}
+        />
+      </section>
+    </main>
+  );
+}
+
+function ArchivePage({
+  completedHistory,
+  completedTaskCount,
+  catProfile,
+  handleRestoreTask,
+  handleDeleteTask,
+}) {
+  return (
+    <main className="app">
+      <section className="dashboard archive-page">
+        <div className="archive-hero">
+          <div>
+            <p className="card-kicker">Completed archive</p>
+            <h1>Quest History</h1>
+            <p>
+              A cosy little record of everything you have finished. Restore a
+              task if you completed it by accident, or keep this page as your
+              productivity scrapbook.
+            </p>
+          </div>
+
+          <Link className="cute-link-button secondary-link-button" to="/">
+            Back to Dashboard
+          </Link>
+        </div>
+
+        <div className="archive-summary-grid">
+          <div className="archive-summary-card">
+            <span>Completed Quests</span>
+            <strong>{completedTaskCount}</strong>
+          </div>
+
+          <div className="archive-summary-card">
+            <span>Mochi&apos;s XP</span>
+            <strong>{catProfile.totalXp}</strong>
+          </div>
+
+          <div className="archive-summary-card">
+            <span>Treats Earned</span>
+            <strong>{catProfile.treats}</strong>
+          </div>
+        </div>
+
+        <TaskList
+          title="Completed History"
+          subtitle="Tasks you completed are stored here instead of crowding the main dashboard."
+          tasks={completedHistory}
+          emptyMessage="No completed tasks yet. Mochi is waiting for treats."
+          variant="completed"
+          onRestoreTask={handleRestoreTask}
+          onDeleteTask={handleDeleteTask}
+        />
+      </section>
+    </main>
+  );
+}
+
 function App() {
   const [tasks, setTasks] = useState(() => loadSavedTasks());
   const [catProfile, setCatProfile] = useState(() => loadSavedCatProfile());
@@ -162,7 +374,8 @@ function App() {
       return;
     }
 
-    const rewardXp = taskToComplete.rewardXp || getTaskRewardXp(taskToComplete.priority);
+    const rewardXp =
+      taskToComplete.rewardXp || getTaskRewardXp(taskToComplete.priority);
 
     if (!taskToComplete.rewardClaimed) {
       setCatProfile((currentProfile) => ({
@@ -275,138 +488,74 @@ function App() {
   });
 
   return (
-    <main className="app">
-      <section className="dashboard">
-        <Header />
-
-        <div className="hero-grid">
-          <CatCompanion
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <DashboardPage
             catProfile={catProfile}
+            totalTasks={totalTasks}
+            activeTaskCount={activeTaskCount}
             completedTaskCount={completedTaskCount}
+            highPriorityTasks={highPriorityTasks}
+            newTaskTitle={newTaskTitle}
+            setNewTaskTitle={setNewTaskTitle}
+            newTaskPriority={newTaskPriority}
+            setNewTaskPriority={setNewTaskPriority}
+            handleAddTask={handleAddTask}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+            displayedTasks={displayedTasks}
+            handleCompleteTask={handleCompleteTask}
+            handleDeleteTask={handleDeleteTask}
           />
+        }
+      />
 
-          <section className="focus-card">
-            <p className="card-kicker">Today&apos;s cosy quest</p>
-            <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
-            <p>
-              Complete active tasks to collect XP. Finished tasks move into your
-              history, so your current list stays calm and focused.
-            </p>
-          </section>
-        </div>
-
-        <div className="stats-grid">
-          <StatsCard
-            icon="🌸"
-            label="Total Quests"
-            value={totalTasks}
-            helper="All tasks created"
+      <Route
+        path="/archive"
+        element={
+          <ArchivePage
+            completedHistory={completedHistory}
+            completedTaskCount={completedTaskCount}
+            catProfile={catProfile}
+            handleRestoreTask={handleRestoreTask}
+            handleDeleteTask={handleDeleteTask}
           />
-          <StatsCard
-            icon="🧁"
-            label="Active"
-            value={activeTaskCount}
-            helper="Still waiting for you"
+        }
+      />
+
+      <Route
+        path="*"
+        element={
+          <DashboardPage
+            catProfile={catProfile}
+            totalTasks={totalTasks}
+            activeTaskCount={activeTaskCount}
+            completedTaskCount={completedTaskCount}
+            highPriorityTasks={highPriorityTasks}
+            newTaskTitle={newTaskTitle}
+            setNewTaskTitle={setNewTaskTitle}
+            newTaskPriority={newTaskPriority}
+            setNewTaskPriority={setNewTaskPriority}
+            handleAddTask={handleAddTask}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+            displayedTasks={displayedTasks}
+            handleCompleteTask={handleCompleteTask}
+            handleDeleteTask={handleDeleteTask}
           />
-          <StatsCard
-            icon="✨"
-            label="Completed"
-            value={completedTaskCount}
-            helper="Moved to history"
-          />
-          <StatsCard
-            icon="🎀"
-            label="High Priority"
-            value={highPriorityTasks}
-            helper="Needs extra focus"
-          />
-        </div>
-
-        <TaskForm
-          newTaskTitle={newTaskTitle}
-          setNewTaskTitle={setNewTaskTitle}
-          newTaskPriority={newTaskPriority}
-          setNewTaskPriority={setNewTaskPriority}
-          onAddTask={handleAddTask}
-        />
-
-        <div className="filter-bar">
-          <button
-            className={activeFilter === "all" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("all")}
-          >
-            All Active
-          </button>
-
-          <button
-            className={activeFilter === "high" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("high")}
-          >
-            High Priority
-          </button>
-
-          <button
-            className={activeFilter === "medium" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("medium")}
-          >
-            Medium
-          </button>
-
-          <button
-            className={activeFilter === "low" ? "active-filter" : ""}
-            onClick={() => setActiveFilter("low")}
-          >
-            Low
-          </button>
-        </div>
-
-        <div className="controls-row">
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Search active tasks..."
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-            />
-          </div>
-
-          <div className="sort-control">
-            <label htmlFor="sort-tasks">Sort active tasks</label>
-            <select
-              id="sort-tasks"
-              value={sortOption}
-              onChange={(event) => setSortOption(event.target.value)}
-            >
-              <option value="newest">Newest first</option>
-              <option value="oldest">Oldest first</option>
-              <option value="priority-high">Priority: high to low</option>
-              <option value="priority-low">Priority: low to high</option>
-              <option value="title-az">Title A–Z</option>
-            </select>
-          </div>
-        </div>
-
-        <TaskList
-          title="Active Tasks"
-          subtitle="Complete tasks to earn XP and send them to your cosy history."
-          tasks={displayedTasks}
-          emptyMessage="No active tasks here. Add a new quest above!"
-          variant="active"
-          onCompleteTask={handleCompleteTask}
-          onDeleteTask={handleDeleteTask}
-        />
-
-        <TaskList
-          title="Completed History"
-          subtitle="A little archive of everything you have already finished."
-          tasks={completedHistory}
-          emptyMessage="No completed tasks yet. Mochi is waiting for treats."
-          variant="completed"
-          onRestoreTask={handleRestoreTask}
-          onDeleteTask={handleDeleteTask}
-        />
-      </section>
-    </main>
+        }
+      />
+    </Routes>
   );
 }
 
