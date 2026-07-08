@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@500;600;700;800&display=swap");
 
 * {
   box-sizing: border-box;
@@ -28,10 +28,10 @@
 .eyebrow,
 .card-kicker {
   color: #b678a6;
-  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   font-size: 13px;
   margin: 0 0 8px;
 }
@@ -41,26 +41,29 @@ h2,
 h3,
 button,
 select,
-input,
-.mini-nav-tab {
-  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+input {
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
 }
 
 h1 {
   font-size: 64px;
   margin: 8px 0;
   color: #4a365f;
-  letter-spacing: -0.05em;
-  font-weight: 700;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  line-height: 1.02;
 }
 
 h2 {
   color: #4a365f;
-  font-weight: 700;
+  font-weight: 750;
+  letter-spacing: -0.025em;
 }
 
 h3 {
   color: #4a365f;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .subtitle {
@@ -97,8 +100,10 @@ h3 {
   border-radius: 999px;
   text-decoration: none;
   color: #6f5f7d;
+  font-family: "Fredoka", Arial, Helvetica, sans-serif;
   font-size: 15px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   transition:
     transform 0.2s ease,
     background 0.2s ease,
@@ -151,7 +156,15 @@ h3 {
   gap: 16px;
 }
 
-.cat-card h2,
+.cat-card h2 {
+  margin: 0;
+  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #4a365f;
+}
+
 .focus-card h2,
 .task-form h2,
 .task-list h2 {
@@ -701,8 +714,9 @@ h3 {
 
 .cat-stats strong {
   display: block;
-  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
   font-size: 24px;
+  font-weight: 800;
   color: #4a365f;
 }
 
@@ -806,9 +820,13 @@ h3 {
 }
 
 .focus-card h2 {
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
   font-size: 34px;
+  font-weight: 800;
   line-height: 1.15;
+  letter-spacing: -0.035em;
   margin-bottom: 12px;
+  color: #4a365f;
 }
 
 .focus-card p {
@@ -947,8 +965,9 @@ h3 {
 .archive-summary-card strong {
   display: block;
   color: #4a365f;
-  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
   font-size: 38px;
+  font-weight: 800;
 }
 
 .archive-summary-card p {
@@ -1030,8 +1049,9 @@ h3 {
 
 .stat-card strong {
   display: block;
-  font-family: "Fredoka", Arial, Helvetica, sans-serif;
+  font-family: "Outfit", Arial, Helvetica, sans-serif;
   font-size: 34px;
+  font-weight: 800;
   color: #4a365f;
 }
 
