@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Route, Routes } from "react-router";
+import { Link, NavLink, Route, Routes } from "react-router";
 import "./App.css";
 
 import CatCompanion from "./components/CatCompanion";
@@ -122,7 +122,17 @@ function MiniTopNav() {
     <nav className="mini-top-nav" aria-label="Main navigation">
       <NavLink end to="/" className={getMiniNavClass}>
         <span>🏠</span>
-        <span>Dashboard</span>
+        <span>Home</span>
+      </NavLink>
+
+      <NavLink to="/tasks" className={getMiniNavClass}>
+        <span>📝</span>
+        <span>Tasks</span>
+      </NavLink>
+
+      <NavLink to="/mochi" className={getMiniNavClass}>
+        <span>🐱</span>
+        <span>Mochi</span>
       </NavLink>
 
       <NavLink to="/archive" className={getMiniNavClass}>
@@ -133,8 +143,142 @@ function MiniTopNav() {
   );
 }
 
-function DashboardPage({
+function PageIntro({ kicker, title, children }) {
+  return (
+    <section className="page-intro-card">
+      <p className="card-kicker">{kicker}</p>
+      <h1>{title}</h1>
+      <p>{children}</p>
+    </section>
+  );
+}
+
+function HomePage({
+  totalTasks,
+  activeTaskCount,
+  completedTaskCount,
+  highPriorityTasks,
+  activeTasks,
   catProfile,
+}) {
+  const totalXp = catProfile.totalXp || 0;
+  const level = Math.floor(totalXp / 100) + 1;
+  const xpInCurrentLevel = totalXp % 100;
+  const previewTasks = activeTasks.slice(0, 3);
+
+  return (
+    <main className="app">
+      <MiniTopNav />
+
+      <section className="dashboard">
+        <Header />
+
+        <div className="home-hero-grid">
+          <section className="home-hero-card">
+            <p className="card-kicker">Welcome back</p>
+            <h2>Your cosy productivity space is ready.</h2>
+            <p>
+              Check your active quests, visit Mochi, or look through your
+              completed archive without crowding everything onto one page.
+            </p>
+
+            <div className="home-link-row">
+              <Link className="cute-page-link" to="/tasks">
+                Start Tasks
+              </Link>
+
+              <Link className="cute-page-link secondary-page-link" to="/mochi">
+                Visit Mochi
+              </Link>
+            </div>
+          </section>
+
+          <section className="home-mochi-card">
+            <p className="card-kicker">Mochi status</p>
+            <h2>{catProfile.catName}</h2>
+
+            <div className="home-mochi-bubble">🐱</div>
+
+            <div className="home-mochi-stats">
+              <div>
+                <strong>Level {level}</strong>
+                <span>{xpInCurrentLevel}/100 XP</span>
+              </div>
+
+              <div>
+                <strong>{catProfile.treats}</strong>
+                <span>Treats</span>
+              </div>
+            </div>
+
+            <Link className="text-page-link" to="/mochi">
+              Open Mochi&apos;s room →
+            </Link>
+          </section>
+        </div>
+
+        <div className="stats-grid">
+          <StatsCard
+            icon="🌸"
+            label="Total Quests"
+            value={totalTasks}
+            helper="All tasks created"
+          />
+          <StatsCard
+            icon="🧁"
+            label="Active"
+            value={activeTaskCount}
+            helper="Still waiting for you"
+          />
+          <StatsCard
+            icon="✨"
+            label="Completed"
+            value={completedTaskCount}
+            helper="Saved in archive"
+          />
+          <StatsCard
+            icon="🎀"
+            label="High Priority"
+            value={highPriorityTasks}
+            helper="Needs extra focus"
+          />
+        </div>
+
+        <section className="home-preview-card">
+          <div className="home-preview-header">
+            <div>
+              <p className="card-kicker">Task preview</p>
+              <h2>Active Quests</h2>
+            </div>
+
+            <Link className="text-page-link" to="/tasks">
+              View all tasks →
+            </Link>
+          </div>
+
+          {previewTasks.length === 0 ? (
+            <p className="home-preview-empty">
+              No active tasks right now. Add your next quest on the Tasks page.
+            </p>
+          ) : (
+            <div className="home-preview-list">
+              {previewTasks.map((task) => (
+                <article className="home-preview-item" key={task.id}>
+                  <span>{task.title}</span>
+                  <span className={`priority-badge ${task.priority}`}>
+                    {task.priority}
+                  </span>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      </section>
+    </main>
+  );
+}
+
+function TasksPage({
   totalTasks,
   activeTaskCount,
   completedTaskCount,
@@ -163,25 +307,11 @@ function DashboardPage({
     <main className="app">
       <MiniTopNav />
 
-      <section className="dashboard">
-        <Header />
-
-        <div className="hero-grid">
-          <CatCompanion
-            catProfile={catProfile}
-            completedTaskCount={completedTaskCount}
-          />
-
-          <section className="focus-card">
-            <p className="card-kicker">Today&apos;s cosy quest</p>
-            <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
-            <p>
-              Complete active tasks to collect XP. Finished tasks now live in
-              their own archive page, so your main dashboard stays calm and
-              focused.
-            </p>
-          </section>
-        </div>
+      <section className="dashboard task-page">
+        <PageIntro kicker="Task garden" title="Tasks">
+          Add new quests, filter your active list, and complete tasks to earn XP
+          for Mochi.
+        </PageIntro>
 
         <div className="stats-grid">
           <StatsCard
@@ -283,6 +413,59 @@ function DashboardPage({
           onCompleteTask={handleCompleteTask}
           onDeleteTask={handleDeleteTask}
         />
+      </section>
+    </main>
+  );
+}
+
+function MochiPage({ catProfile, completedTaskCount }) {
+  return (
+    <main className="app">
+      <MiniTopNav />
+
+      <section className="dashboard mochi-page">
+        <PageIntro kicker="Mochi's room" title="Mochi">
+          Track XP, treats, levels, and unlocked accessories in one dedicated
+          cosy space.
+        </PageIntro>
+
+        <div className="mochi-layout">
+          <CatCompanion
+            catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
+          />
+
+          <section className="mochi-info-card">
+            <p className="card-kicker">How Mochi grows</p>
+            <h2>Complete tasks to unlock more decorations.</h2>
+            <p>
+              Each completed quest gives Mochi XP and treats. Higher-priority
+              tasks give bigger rewards, and new level milestones unlock extra
+              room details and accessories.
+            </p>
+
+            <div className="mochi-reward-list">
+              <div>
+                <strong>Low</strong>
+                <span>+5 XP</span>
+              </div>
+
+              <div>
+                <strong>Medium</strong>
+                <span>+10 XP</span>
+              </div>
+
+              <div>
+                <strong>High</strong>
+                <span>+15 XP</span>
+              </div>
+            </div>
+
+            <Link className="cute-page-link" to="/tasks">
+              Complete a Quest
+            </Link>
+          </section>
+        </div>
       </section>
     </main>
   );
@@ -532,33 +715,54 @@ function App() {
     return new Date(taskB.completedAt) - new Date(taskA.completedAt);
   });
 
-  const dashboardElement = (
-    <DashboardPage
-      catProfile={catProfile}
-      totalTasks={totalTasks}
-      activeTaskCount={activeTaskCount}
-      completedTaskCount={completedTaskCount}
-      highPriorityTasks={highPriorityTasks}
-      newTaskTitle={newTaskTitle}
-      setNewTaskTitle={setNewTaskTitle}
-      newTaskPriority={newTaskPriority}
-      setNewTaskPriority={setNewTaskPriority}
-      handleAddTask={handleAddTask}
-      activeFilter={activeFilter}
-      setActiveFilter={setActiveFilter}
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-      sortOption={sortOption}
-      setSortOption={setSortOption}
-      displayedTasks={displayedTasks}
-      handleCompleteTask={handleCompleteTask}
-      handleDeleteTask={handleDeleteTask}
-    />
-  );
+  const taskPageProps = {
+    totalTasks,
+    activeTaskCount,
+    completedTaskCount,
+    highPriorityTasks,
+    newTaskTitle,
+    setNewTaskTitle,
+    newTaskPriority,
+    setNewTaskPriority,
+    handleAddTask,
+    activeFilter,
+    setActiveFilter,
+    searchQuery,
+    setSearchQuery,
+    sortOption,
+    setSortOption,
+    displayedTasks,
+    handleCompleteTask,
+    handleDeleteTask,
+  };
 
   return (
     <Routes>
-      <Route path="/" element={dashboardElement} />
+      <Route
+        path="/"
+        element={
+          <HomePage
+            totalTasks={totalTasks}
+            activeTaskCount={activeTaskCount}
+            completedTaskCount={completedTaskCount}
+            highPriorityTasks={highPriorityTasks}
+            activeTasks={activeTasks}
+            catProfile={catProfile}
+          />
+        }
+      />
+
+      <Route path="/tasks" element={<TasksPage {...taskPageProps} />} />
+
+      <Route
+        path="/mochi"
+        element={
+          <MochiPage
+            catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
+          />
+        }
+      />
 
       <Route
         path="/archive"
@@ -573,7 +777,19 @@ function App() {
         }
       />
 
-      <Route path="*" element={dashboardElement} />
+      <Route
+        path="*"
+        element={
+          <HomePage
+            totalTasks={totalTasks}
+            activeTaskCount={activeTaskCount}
+            completedTaskCount={completedTaskCount}
+            highPriorityTasks={highPriorityTasks}
+            activeTasks={activeTasks}
+            catProfile={catProfile}
+          />
+        }
+      />
     </Routes>
   );
 }
