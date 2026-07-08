@@ -1,3 +1,26 @@
+const ACCESSORY_UNLOCKS = [
+  {
+    level: 1,
+    name: "Ribbon Bow",
+    icon: "🎀",
+  },
+  {
+    level: 2,
+    name: "Star Collar",
+    icon: "⭐",
+  },
+  {
+    level: 3,
+    name: "Heart Cushion",
+    icon: "💗",
+  },
+  {
+    level: 4,
+    name: "Sparkle Crown",
+    icon: "✨",
+  },
+];
+
 function CatCompanion({ catProfile, completedTaskCount }) {
   const totalXp = catProfile.totalXp || 0;
   const level = Math.floor(totalXp / 100) + 1;
@@ -23,11 +46,13 @@ function CatCompanion({ catProfile, completedTaskCount }) {
         <span className="floating-sparkle sparkle-three">✧</span>
 
         <div
-          className="animated-cat"
+          className={`animated-cat level-${Math.min(level, 4)}`}
           role="img"
           aria-label="Animated pastel cat companion"
         >
           <div className="cat-shadow"></div>
+
+          {level >= 3 && <div className="cat-cushion"></div>}
 
           <div className="cat-tail">
             <div className="tail-tip"></div>
@@ -38,6 +63,12 @@ function CatCompanion({ catProfile, completedTaskCount }) {
             <div className="cat-paw cat-paw-left"></div>
             <div className="cat-paw cat-paw-right"></div>
           </div>
+
+          {level >= 2 && (
+            <div className="cat-collar">
+              <span className="collar-charm">★</span>
+            </div>
+          )}
 
           <div className="cat-head">
             <div className="cat-ear cat-ear-left">
@@ -77,6 +108,14 @@ function CatCompanion({ catProfile, completedTaskCount }) {
               <div className="cat-whisker cat-whisker-right-two"></div>
             </div>
           </div>
+
+          {level >= 4 && (
+            <div className="cat-crown">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -113,6 +152,43 @@ function CatCompanion({ catProfile, completedTaskCount }) {
         <div>
           <strong>{totalXp}</strong>
           <span>Total XP</span>
+        </div>
+      </div>
+
+      <div className="closet-section">
+        <div className="closet-header">
+          <div>
+            <p className="card-kicker">Mochi&apos;s closet</p>
+            <h3>Level rewards</h3>
+          </div>
+
+          <span>Unlock with XP</span>
+        </div>
+
+        <div className="accessory-grid">
+          {ACCESSORY_UNLOCKS.map((accessory) => {
+            const isUnlocked = level >= accessory.level;
+
+            return (
+              <div
+                className={`accessory-chip ${
+                  isUnlocked ? "unlocked-accessory" : "locked-accessory"
+                }`}
+                key={accessory.name}
+              >
+                <span className="accessory-icon">{accessory.icon}</span>
+
+                <div>
+                  <strong>{accessory.name}</strong>
+                  <span>
+                    {isUnlocked
+                      ? "Unlocked"
+                      : `Unlocks at level ${accessory.level}`}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

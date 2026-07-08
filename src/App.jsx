@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router";
+import { NavLink, Route, Routes } from "react-router";
 import "./App.css";
 
 import CatCompanion from "./components/CatCompanion";
@@ -113,12 +113,23 @@ function loadSavedCatProfile() {
   }
 }
 
-function FloatingNavButton({ to, icon, label, variant }) {
+function getMiniNavClass({ isActive }) {
+  return isActive ? "mini-nav-tab active-mini-nav-tab" : "mini-nav-tab";
+}
+
+function MiniTopNav() {
   return (
-    <Link className={`floating-nav-button ${variant}`} to={to}>
-      <span className="floating-nav-icon">{icon}</span>
-      <span>{label}</span>
-    </Link>
+    <nav className="mini-top-nav" aria-label="Main navigation">
+      <NavLink end to="/" className={getMiniNavClass}>
+        <span>🏠</span>
+        <span>Dashboard</span>
+      </NavLink>
+
+      <NavLink to="/archive" className={getMiniNavClass}>
+        <span>🐾</span>
+        <span>Archive</span>
+      </NavLink>
+    </nav>
   );
 }
 
@@ -145,12 +156,7 @@ function DashboardPage({
 }) {
   return (
     <main className="app">
-      <FloatingNavButton
-        to="/archive"
-        icon="🐾"
-        label="Archived Tasks"
-        variant="archive-float-button"
-      />
+      <MiniTopNav />
 
       <section className="dashboard">
         <Header />
@@ -286,12 +292,7 @@ function ArchivePage({
 }) {
   return (
     <main className="app">
-      <FloatingNavButton
-        to="/"
-        icon="🐾"
-        label="Dashboard"
-        variant="dashboard-float-button"
-      />
+      <MiniTopNav />
 
       <section className="dashboard archive-page">
         <section className="archive-hero">
