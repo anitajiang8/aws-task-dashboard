@@ -113,6 +113,15 @@ function loadSavedCatProfile() {
   }
 }
 
+function FloatingNavButton({ to, icon, label, variant }) {
+  return (
+    <Link className={`floating-nav-button ${variant}`} to={to}>
+      <span className="floating-nav-icon">{icon}</span>
+      <span>{label}</span>
+    </Link>
+  );
+}
+
 function DashboardPage({
   catProfile,
   totalTasks,
@@ -136,6 +145,13 @@ function DashboardPage({
 }) {
   return (
     <main className="app">
+      <FloatingNavButton
+        to="/archive"
+        icon="🐾"
+        label="Archived Tasks"
+        variant="archive-float-button"
+      />
+
       <section className="dashboard">
         <Header />
 
@@ -153,12 +169,6 @@ function DashboardPage({
               their own archive page, so your main dashboard stays calm and
               focused.
             </p>
-
-            <div className="hero-actions">
-              <Link className="cute-link-button" to="/archive">
-                View Completed Archive
-              </Link>
-            </div>
           </section>
         </div>
 
@@ -276,43 +286,72 @@ function ArchivePage({
 }) {
   return (
     <main className="app">
+      <FloatingNavButton
+        to="/"
+        icon="🐾"
+        label="Dashboard"
+        variant="dashboard-float-button"
+      />
+
       <section className="dashboard archive-page">
-        <div className="archive-hero">
-          <div>
-            <p className="card-kicker">Completed archive</p>
-            <h1>Quest History</h1>
+        <section className="archive-hero">
+          <div className="archive-hero-copy">
+            <p className="card-kicker">Mochi&apos;s scrapbook</p>
+            <h1>Archived Tasks</h1>
             <p>
-              A cosy little record of everything you have finished. Restore a
-              task if you completed it by accident, or keep this page as your
-              productivity scrapbook.
+              Every completed quest lives here, like a soft little record of
+              your progress. Restore a task when you need it back, or delete it
+              when you are ready to clear the shelf.
             </p>
           </div>
 
-          <Link className="cute-link-button secondary-link-button" to="/">
-            Back to Dashboard
-          </Link>
-        </div>
+          <div className="archive-hero-art" aria-hidden="true">
+            <span className="archive-art-sparkle archive-art-sparkle-one">
+              ✦
+            </span>
+            <span className="archive-art-sparkle archive-art-sparkle-two">
+              ♡
+            </span>
+            <div className="archive-yarn-ball">🧶</div>
+            <div className="archive-paw-card">🐾</div>
+          </div>
+        </section>
 
         <div className="archive-summary-grid">
           <div className="archive-summary-card">
             <span>Completed Quests</span>
             <strong>{completedTaskCount}</strong>
+            <p>Finished and saved</p>
           </div>
 
           <div className="archive-summary-card">
             <span>Mochi&apos;s XP</span>
             <strong>{catProfile.totalXp}</strong>
+            <p>Total progress earned</p>
           </div>
 
           <div className="archive-summary-card">
             <span>Treats Earned</span>
             <strong>{catProfile.treats}</strong>
+            <p>Rewards for Mochi</p>
           </div>
         </div>
 
+        <section className="archive-note-card">
+          <div className="archive-note-icon">📚</div>
+          <div>
+            <h2>Completed quests stay out of your way.</h2>
+            <p>
+              Your dashboard only shows active tasks now. This archive keeps
+              your finished work organised without making the main page feel
+              crowded.
+            </p>
+          </div>
+        </section>
+
         <TaskList
           title="Completed History"
-          subtitle="Tasks you completed are stored here instead of crowding the main dashboard."
+          subtitle="A cosy archive of everything you have already finished."
           tasks={completedHistory}
           emptyMessage="No completed tasks yet. Mochi is waiting for treats."
           variant="completed"
@@ -487,34 +526,33 @@ function App() {
     return new Date(taskB.completedAt) - new Date(taskA.completedAt);
   });
 
+  const dashboardElement = (
+    <DashboardPage
+      catProfile={catProfile}
+      totalTasks={totalTasks}
+      activeTaskCount={activeTaskCount}
+      completedTaskCount={completedTaskCount}
+      highPriorityTasks={highPriorityTasks}
+      newTaskTitle={newTaskTitle}
+      setNewTaskTitle={setNewTaskTitle}
+      newTaskPriority={newTaskPriority}
+      setNewTaskPriority={setNewTaskPriority}
+      handleAddTask={handleAddTask}
+      activeFilter={activeFilter}
+      setActiveFilter={setActiveFilter}
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      sortOption={sortOption}
+      setSortOption={setSortOption}
+      displayedTasks={displayedTasks}
+      handleCompleteTask={handleCompleteTask}
+      handleDeleteTask={handleDeleteTask}
+    />
+  );
+
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <DashboardPage
-            catProfile={catProfile}
-            totalTasks={totalTasks}
-            activeTaskCount={activeTaskCount}
-            completedTaskCount={completedTaskCount}
-            highPriorityTasks={highPriorityTasks}
-            newTaskTitle={newTaskTitle}
-            setNewTaskTitle={setNewTaskTitle}
-            newTaskPriority={newTaskPriority}
-            setNewTaskPriority={setNewTaskPriority}
-            handleAddTask={handleAddTask}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-            displayedTasks={displayedTasks}
-            handleCompleteTask={handleCompleteTask}
-            handleDeleteTask={handleDeleteTask}
-          />
-        }
-      />
+      <Route path="/" element={dashboardElement} />
 
       <Route
         path="/archive"
@@ -529,32 +567,7 @@ function App() {
         }
       />
 
-      <Route
-        path="*"
-        element={
-          <DashboardPage
-            catProfile={catProfile}
-            totalTasks={totalTasks}
-            activeTaskCount={activeTaskCount}
-            completedTaskCount={completedTaskCount}
-            highPriorityTasks={highPriorityTasks}
-            newTaskTitle={newTaskTitle}
-            setNewTaskTitle={setNewTaskTitle}
-            newTaskPriority={newTaskPriority}
-            setNewTaskPriority={setNewTaskPriority}
-            handleAddTask={handleAddTask}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-            displayedTasks={displayedTasks}
-            handleCompleteTask={handleCompleteTask}
-            handleDeleteTask={handleDeleteTask}
-          />
-        }
-      />
+      <Route path="*" element={dashboardElement} />
     </Routes>
   );
 }
