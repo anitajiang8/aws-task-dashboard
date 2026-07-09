@@ -121,22 +121,22 @@ function MiniTopNav() {
   return (
     <nav className="mini-top-nav" aria-label="Main navigation">
       <NavLink end to="/" className={getMiniNavClass}>
-        <span>🏠</span>
+        <span className="nav-dot"></span>
         <span>Home</span>
       </NavLink>
 
       <NavLink to="/tasks" className={getMiniNavClass}>
-        <span>📝</span>
+        <span className="nav-dot"></span>
         <span>Tasks</span>
       </NavLink>
 
       <NavLink to="/mochi" className={getMiniNavClass}>
-        <span>🐱</span>
+        <span className="nav-dot"></span>
         <span>Mochi</span>
       </NavLink>
 
       <NavLink to="/archive" className={getMiniNavClass}>
-        <span>🐾</span>
+        <span className="nav-dot"></span>
         <span>Archive</span>
       </NavLink>
     </nav>
@@ -154,17 +154,15 @@ function PageIntro({ kicker, title, children }) {
 }
 
 function HomePage({
-  totalTasks,
   activeTaskCount,
   completedTaskCount,
-  highPriorityTasks,
   activeTasks,
   catProfile,
 }) {
   const totalXp = catProfile.totalXp || 0;
   const level = Math.floor(totalXp / 100) + 1;
   const xpInCurrentLevel = totalXp % 100;
-  const previewTasks = activeTasks.slice(0, 3);
+  const nextTask = activeTasks[0];
 
   return (
     <main className="app">
@@ -173,36 +171,71 @@ function HomePage({
       <section className="dashboard">
         <Header />
 
-        <div className="home-hero-grid">
-          <section className="home-hero-card">
-            <p className="card-kicker">Welcome back</p>
-            <h2>Your cosy productivity space is ready.</h2>
+        <section className="home-landing-grid">
+          <div className="home-story-card">
+            <p className="card-kicker">What is Purrductivity?</p>
+            <h2>
+              A softer way to manage tasks without making productivity feel
+              cold.
+            </h2>
             <p>
-              Check your active quests, visit Mochi, or look through your
-              completed archive without crowding everything onto one page.
+              Purrductivity turns everyday tasks into small quests. You can add
+              work, school, or personal reminders, complete them for XP, and
+              gradually grow Mochi through levels, treats, and unlockable
+              decorations.
             </p>
 
             <div className="home-link-row">
               <Link className="cute-page-link" to="/tasks">
-                Start Tasks
+                Open Tasks
               </Link>
 
               <Link className="cute-page-link secondary-page-link" to="/mochi">
                 Visit Mochi
               </Link>
             </div>
-          </section>
+          </div>
 
-          <section className="home-mochi-card">
-            <p className="card-kicker">Mochi status</p>
-            <h2>{catProfile.catName}</h2>
-
-            <div className="home-mochi-bubble">🐱</div>
-
-            <div className="home-mochi-stats">
+          <div className="home-product-card">
+            <div className="home-product-top">
               <div>
-                <strong>Level {level}</strong>
+                <p className="card-kicker">Current progress</p>
+                <h2>Mochi is level {level}</h2>
+              </div>
+
+              <div className="home-mochi-mark" aria-hidden="true">
+                <div className="home-mochi-ear home-mochi-ear-left"></div>
+                <div className="home-mochi-ear home-mochi-ear-right"></div>
+                <div className="home-mochi-face">
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+
+            <div className="home-progress-line">
+              <div>
                 <span>{xpInCurrentLevel}/100 XP</span>
+                <strong>Next level progress</strong>
+              </div>
+
+              <div className="home-mini-xp-bar">
+                <div
+                  className="home-mini-xp-fill"
+                  style={{ width: `${xpInCurrentLevel}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="home-status-grid">
+              <div>
+                <strong>{activeTaskCount}</strong>
+                <span>Active tasks</span>
+              </div>
+
+              <div>
+                <strong>{completedTaskCount}</strong>
+                <span>Archived</span>
               </div>
 
               <div>
@@ -210,68 +243,73 @@ function HomePage({
                 <span>Treats</span>
               </div>
             </div>
+          </div>
+        </section>
 
-            <Link className="text-page-link" to="/mochi">
-              Open Mochi&apos;s room →
-            </Link>
-          </section>
-        </div>
-
-        <div className="stats-grid">
-          <StatsCard
-            icon="🌸"
-            label="Total Quests"
-            value={totalTasks}
-            helper="All tasks created"
-          />
-          <StatsCard
-            icon="🧁"
-            label="Active"
-            value={activeTaskCount}
-            helper="Still waiting for you"
-          />
-          <StatsCard
-            icon="✨"
-            label="Completed"
-            value={completedTaskCount}
-            helper="Saved in archive"
-          />
-          <StatsCard
-            icon="🎀"
-            label="High Priority"
-            value={highPriorityTasks}
-            helper="Needs extra focus"
-          />
-        </div>
-
-        <section className="home-preview-card">
-          <div className="home-preview-header">
-            <div>
-              <p className="card-kicker">Task preview</p>
-              <h2>Active Quests</h2>
-            </div>
-
-            <Link className="text-page-link" to="/tasks">
-              View all tasks →
-            </Link>
+        <section className="home-how-it-works">
+          <div className="home-section-heading">
+            <p className="card-kicker">How it works</p>
+            <h2>Simple task tracking with a small reward loop.</h2>
           </div>
 
-          {previewTasks.length === 0 ? (
-            <p className="home-preview-empty">
-              No active tasks right now. Add your next quest on the Tasks page.
+          <div className="home-step-grid">
+            <article className="home-step-card">
+              <span className="home-step-number">01</span>
+              <h3>Add a quest</h3>
+              <p>
+                Create a task and choose its priority. Higher-priority tasks are
+                worth more XP.
+              </p>
+            </article>
+
+            <article className="home-step-card">
+              <span className="home-step-number">02</span>
+              <h3>Complete it</h3>
+              <p>
+                Finished tasks move out of the way and are saved in the archive
+                instead of cluttering your active list.
+              </p>
+            </article>
+
+            <article className="home-step-card">
+              <span className="home-step-number">03</span>
+              <h3>Grow Mochi</h3>
+              <p>
+                XP and treats build long-term progress, making your task history
+                feel more motivating.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section className="home-next-card">
+          <div>
+            <p className="card-kicker">Next focus</p>
+            <h2>
+              {nextTask ? nextTask.title : "Your task list is clear right now."}
+            </h2>
+            <p>
+              {nextTask
+                ? `You have ${activeTaskCount} active task${
+                    activeTaskCount === 1 ? "" : "s"
+                  } waiting.`
+                : "Add a new quest when you are ready to start your next focus session."}
             </p>
-          ) : (
-            <div className="home-preview-list">
-              {previewTasks.map((task) => (
-                <article className="home-preview-item" key={task.id}>
-                  <span>{task.title}</span>
-                  <span className={`priority-badge ${task.priority}`}>
-                    {task.priority}
-                  </span>
-                </article>
-              ))}
-            </div>
-          )}
+          </div>
+
+          <Link className="text-page-link" to="/tasks">
+            Go to Tasks →
+          </Link>
+        </section>
+
+        <section className="home-project-note">
+          <p className="card-kicker">Learning project</p>
+          <h2>Built to practise React now, AWS later.</h2>
+          <p>
+            The app currently stores data in your browser. Later, it can connect
+            to an AWS backend using API Gateway, Lambda, and DynamoDB so tasks
+            can be saved in the cloud.
+          </p>
         </section>
       </section>
     </main>
@@ -742,10 +780,8 @@ function App() {
         path="/"
         element={
           <HomePage
-            totalTasks={totalTasks}
             activeTaskCount={activeTaskCount}
             completedTaskCount={completedTaskCount}
-            highPriorityTasks={highPriorityTasks}
             activeTasks={activeTasks}
             catProfile={catProfile}
           />
@@ -781,10 +817,8 @@ function App() {
         path="*"
         element={
           <HomePage
-            totalTasks={totalTasks}
             activeTaskCount={activeTaskCount}
             completedTaskCount={completedTaskCount}
-            highPriorityTasks={highPriorityTasks}
             activeTasks={activeTasks}
             catProfile={catProfile}
           />
