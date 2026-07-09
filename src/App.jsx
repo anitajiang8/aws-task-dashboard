@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { NavLink, Route, Routes } from "react-router";
 import "./App.css";
 
+import crownIcon from "./assets/crown.svg";
+import hatIcon from "./assets/hat.svg";
+import sunglassesIcon from "./assets/sunglasses.svg";
+
 import CatCompanion from "./components/CatCompanion";
 import Header from "./components/Header";
 import StatsCard from "./components/StatsCard";
@@ -10,6 +14,65 @@ import TaskList from "./components/TaskList";
 
 const TASKS_STORAGE_KEY = "aws-task-dashboard-tasks";
 const CAT_PROFILE_STORAGE_KEY = "purrductivity-cat-profile";
+
+const ACCESSORIES = [
+  {
+    id: "classic",
+    name: "Classic Set",
+    image: null,
+    emoji: "🐱",
+    unlockLevel: 1,
+  },
+  {
+    id: "bow",
+    name: "Pink Bow",
+    image: null,
+    emoji: "🎀",
+    unlockLevel: 1,
+  },
+  {
+    id: "star-collar",
+    name: "Star Collar",
+    image: null,
+    emoji: "✦",
+    unlockLevel: 1,
+  },
+  {
+    id: "cloud-cushion",
+    name: "Cloud Cushion",
+    image: null,
+    emoji: "☁️",
+    unlockLevel: 1,
+  },
+  {
+    id: "sparkles",
+    name: "Room Sparkles",
+    image: null,
+    emoji: "✨",
+    unlockLevel: 1,
+  },
+  {
+    id: "hat",
+    name: "Cozy Hat",
+    image: hatIcon,
+    emoji: null,
+    unlockLevel: 1,
+  },
+  {
+    id: "sunglasses",
+    name: "Focus Sunglasses",
+    image: sunglassesIcon,
+    emoji: null,
+    unlockLevel: 2,
+  },
+  {
+    id: "crown",
+    name: "Productivity Crown",
+    image: crownIcon,
+    emoji: null,
+    unlockLevel: 3,
+  },
+];
 
 const PRIORITY_ORDER = {
   low: 1,
@@ -50,6 +113,7 @@ const DEFAULT_CAT_PROFILE = {
   catName: "Mochi",
   totalXp: 0,
   treats: 0,
+  equippedAccessory: "classic",
 };
 
 function getTaskRewardXp(priority) {
@@ -102,11 +166,18 @@ function loadSavedCatProfile() {
 
   try {
     const parsedProfile = JSON.parse(savedProfile);
+    const savedAccessory = parsedProfile.equippedAccessory;
+    const validAccessory = ACCESSORIES.some(
+      (accessory) => accessory.id === savedAccessory
+    );
 
     return {
       catName: parsedProfile.catName || DEFAULT_CAT_PROFILE.catName,
       totalXp: parsedProfile.totalXp || 0,
       treats: parsedProfile.treats || 0,
+      equippedAccessory: validAccessory
+        ? savedAccessory
+        : DEFAULT_CAT_PROFILE.equippedAccessory,
     };
   } catch {
     return DEFAULT_CAT_PROFILE;
@@ -140,6 +211,7 @@ function MiniTopNav() {
 
 function DashboardPage({
   catProfile,
+  accessories,
   totalTasks,
   activeTaskCount,
   completedTaskCount,
@@ -179,7 +251,9 @@ function DashboardPage({
           >
             <CatCompanion
               catProfile={catProfile}
+              accessories={accessories}
               completedTaskCount={completedTaskCount}
+              showCloset={false}
             />
           </NavLink>
 
@@ -379,7 +453,12 @@ function ArchivePage({
   );
 }
 
-function MochiPage({ catProfile, completedTaskCount }) {
+function MochiPage({
+  catProfile,
+  accessories,
+  completedTaskCount,
+  handleEquipAccessory,
+}) {
   return (
     <main className="app">
       <MiniTopNav />
@@ -388,7 +467,10 @@ function MochiPage({ catProfile, completedTaskCount }) {
         <div className="mochi-only-layout">
           <CatCompanion
             catProfile={catProfile}
+            accessories={accessories}
             completedTaskCount={completedTaskCount}
+            onEquipAccessory={handleEquipAccessory}
+            showCloset={true}
           />
         </div>
 
@@ -501,6 +583,13 @@ function App() {
     setTasks(remainingTasks);
   }
 
+  function handleEquipAccessory(accessoryId) {
+    setCatProfile((currentProfile) => ({
+      ...currentProfile,
+      equippedAccessory: accessoryId,
+    }));
+  }
+
   const activeTasks = tasks.filter((task) => task.status !== "done");
   const completedTasks = tasks.filter((task) => task.status === "done");
 
@@ -568,6 +657,7 @@ function App() {
   const dashboardElement = (
     <DashboardPage
       catProfile={catProfile}
+      accessories={ACCESSORIES}
       totalTasks={totalTasks}
       activeTaskCount={activeTaskCount}
       completedTaskCount={completedTaskCount}
@@ -611,7 +701,9 @@ function App() {
         element={
           <MochiPage
             catProfile={catProfile}
+            accessories={ACCESSORIES}
             completedTaskCount={completedTaskCount}
+            handleEquipAccessory={handleEquipAccessory}
           />
         }
       />

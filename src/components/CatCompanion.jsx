@@ -1,58 +1,80 @@
-const ACCESSORY_UNLOCKS = [
-  {
-    level: 1,
-    name: "Ribbon Bow",
-    icon: "🎀",
-  },
-  {
-    level: 2,
-    name: "Star Collar",
-    icon: "⭐",
-  },
-  {
-    level: 3,
-    name: "Heart Cushion",
-    icon: "💗",
-  },
-  {
-    level: 4,
-    name: "Sparkle Crown",
-    icon: "✨",
-  },
-];
+const XP_PER_LEVEL = 50;
 
-function CatCompanion({ catProfile, completedTaskCount }) {
-  const totalXp = catProfile.totalXp || 0;
-  const level = Math.floor(totalXp / 100) + 1;
-  const xpInCurrentLevel = totalXp % 100;
-  const xpToNextLevel = 100 - xpInCurrentLevel;
+function getCatLevel(totalXp) {
+  return Math.floor(totalXp / XP_PER_LEVEL) + 1;
+}
+
+function getXpProgress(totalXp) {
+  return totalXp % XP_PER_LEVEL;
+}
+
+function CatCompanion({
+  catProfile,
+  accessories = [],
+  completedTaskCount,
+  onEquipAccessory,
+  showCloset = true,
+}) {
+  const level = getCatLevel(catProfile.totalXp);
+  const xpProgress = getXpProgress(catProfile.totalXp);
+  const xpPercentage = (xpProgress / XP_PER_LEVEL) * 100;
+
+  const equippedAccessory =
+    accessories.find(
+      (accessory) => accessory.id === catProfile.equippedAccessory
+    ) || accessories[0];
+
+  const equippedId = equippedAccessory?.id || "classic";
+
+  const showClassicSet = equippedId === "classic";
+  const showBow = showClassicSet || equippedId === "bow";
+  const showCollar = showClassicSet || equippedId === "star-collar";
+  const showCushion = showClassicSet || equippedId === "cloud-cushion";
+  const showSparkles = showClassicSet || equippedId === "sparkles";
+
+  function handleAccessoryClick(accessory) {
+    const isUnlocked = level >= accessory.unlockLevel;
+
+    if (!isUnlocked || !onEquipAccessory) {
+      return;
+    }
+
+    onEquipAccessory(accessory.id);
+  }
 
   return (
     <section className="cat-card">
       <div className="cat-card-top">
         <div>
-          <p className="card-kicker">Cat companion</p>
+          <p className="card-kicker">Mochi&apos;s corner</p>
           <h2>{catProfile.catName}</h2>
         </div>
 
-        <div className="cat-avatar" aria-label="Cute cat icon">
-          🐾
-        </div>
+        <div className="cat-avatar">🐱</div>
       </div>
 
       <div className="cat-room">
-        <span className="floating-sparkle sparkle-one">✦</span>
-        <span className="floating-sparkle sparkle-two">♡</span>
-        <span className="floating-sparkle sparkle-three">✧</span>
+        {showSparkles && (
+          <>
+            <span className="floating-sparkle sparkle-one">✦</span>
+            <span className="floating-sparkle sparkle-two">♡</span>
+            <span className="floating-sparkle sparkle-three">✧</span>
+          </>
+        )}
 
-        <div
-          className={`animated-cat level-${Math.min(level, 4)}`}
-          role="img"
-          aria-label="Animated pastel cat companion"
-        >
+        <div className="animated-cat" aria-label={`${catProfile.catName} the cat`}>
+          {equippedAccessory?.image && (
+            <img
+              className={`cat-equipped-accessory cat-equipped-${equippedAccessory.id}`}
+              src={equippedAccessory.image}
+              alt=""
+              aria-hidden="true"
+            />
+          )}
+
           <div className="cat-shadow"></div>
 
-          {level >= 3 && <div className="cat-cushion"></div>}
+          {showCushion && <div className="cat-cushion"></div>}
 
           <div className="cat-tail">
             <div className="tail-tip"></div>
@@ -64,12 +86,6 @@ function CatCompanion({ catProfile, completedTaskCount }) {
             <div className="cat-paw cat-paw-right"></div>
           </div>
 
-          {level >= 2 && (
-            <div className="cat-collar">
-              <span className="collar-charm">★</span>
-            </div>
-          )}
-
           <div className="cat-head">
             <div className="cat-ear cat-ear-left">
               <div className="cat-ear-inner"></div>
@@ -79,11 +95,13 @@ function CatCompanion({ catProfile, completedTaskCount }) {
               <div className="cat-ear-inner"></div>
             </div>
 
-            <div className="cat-bow">
-              <span className="bow-left"></span>
-              <span className="bow-center"></span>
-              <span className="bow-right"></span>
-            </div>
+            {showBow && (
+              <div className="cat-bow">
+                <div className="bow-left"></div>
+                <div className="bow-center"></div>
+                <div className="bow-right"></div>
+              </div>
+            )}
 
             <div className="cat-face">
               <div className="cat-eye cat-eye-left">
@@ -98,7 +116,6 @@ function CatCompanion({ catProfile, completedTaskCount }) {
 
               <div className="cat-cheek cat-cheek-left"></div>
               <div className="cat-cheek cat-cheek-right"></div>
-
               <div className="cat-nose"></div>
               <div className="cat-mouth"></div>
 
@@ -109,11 +126,9 @@ function CatCompanion({ catProfile, completedTaskCount }) {
             </div>
           </div>
 
-          {level >= 4 && (
-            <div className="cat-crown">
-              <span></span>
-              <span></span>
-              <span></span>
+          {showCollar && (
+            <div className="cat-collar">
+              <div className="collar-charm">✦</div>
             </div>
           )}
         </div>
@@ -122,23 +137,24 @@ function CatCompanion({ catProfile, completedTaskCount }) {
       <div className="xp-section">
         <div className="xp-label-row">
           <span>Level {level}</span>
-          <span>{xpInCurrentLevel}/100 XP</span>
+          <span>
+            {xpProgress}/{XP_PER_LEVEL} XP
+          </span>
         </div>
 
         <div className="xp-bar">
-          <div
-            className="xp-fill"
-            style={{ width: `${xpInCurrentLevel}%` }}
-          ></div>
+          <div className="xp-fill" style={{ width: `${xpPercentage}%` }}></div>
         </div>
 
-        <p>
-          {xpToNextLevel} XP until {catProfile.catName} reaches level{" "}
-          {level + 1}.
-        </p>
+        <p>{XP_PER_LEVEL - xpProgress} XP until Mochi&apos;s next level.</p>
       </div>
 
       <div className="cat-stats">
+        <div>
+          <strong>{catProfile.totalXp}</strong>
+          <span>Total XP</span>
+        </div>
+
         <div>
           <strong>{catProfile.treats}</strong>
           <span>Treats</span>
@@ -146,51 +162,60 @@ function CatCompanion({ catProfile, completedTaskCount }) {
 
         <div>
           <strong>{completedTaskCount}</strong>
-          <span>Completed</span>
-        </div>
-
-        <div>
-          <strong>{totalXp}</strong>
-          <span>Total XP</span>
+          <span>Quests</span>
         </div>
       </div>
 
-      <div className="closet-section">
-        <div className="closet-header">
-          <div>
-            <p className="card-kicker">Mochi&apos;s closet</p>
-            <h3>Level rewards</h3>
+      {showCloset && (
+        <section className="closet-section">
+          <div className="closet-header">
+            <div>
+              <h3>Mochi&apos;s Closet</h3>
+              <p>Choose an accessory for Mochi to wear.</p>
+            </div>
+
+            <span>{accessories.length} items</span>
           </div>
 
-          <span>Unlock with XP</span>
-        </div>
+          <div className="accessory-grid">
+            {accessories.map((accessory) => {
+              const isUnlocked = level >= accessory.unlockLevel;
+              const isEquipped = catProfile.equippedAccessory === accessory.id;
 
-        <div className="accessory-grid">
-          {ACCESSORY_UNLOCKS.map((accessory) => {
-            const isUnlocked = level >= accessory.level;
-
-            return (
-              <div
-                className={`accessory-chip ${
-                  isUnlocked ? "unlocked-accessory" : "locked-accessory"
-                }`}
-                key={accessory.name}
-              >
-                <span className="accessory-icon">{accessory.icon}</span>
-
-                <div>
-                  <strong>{accessory.name}</strong>
-                  <span>
-                    {isUnlocked
-                      ? "Unlocked"
-                      : `Unlocks at level ${accessory.level}`}
+              return (
+                <button
+                  key={accessory.id}
+                  type="button"
+                  className={`accessory-chip accessory-chip-button ${
+                    isUnlocked ? "unlocked-accessory" : "locked-accessory"
+                  } ${isEquipped ? "equipped-accessory" : ""}`}
+                  onClick={() => handleAccessoryClick(accessory)}
+                  disabled={!isUnlocked}
+                >
+                  <span className="accessory-icon">
+                    {accessory.image ? (
+                      <img src={accessory.image} alt="" aria-hidden="true" />
+                    ) : (
+                      accessory.emoji
+                    )}
                   </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+
+                  <span>
+                    <strong>{accessory.name}</strong>
+                    <span>
+                      {isEquipped
+                        ? "Equipped"
+                        : isUnlocked
+                          ? "Click to equip"
+                          : `Unlocks at Level ${accessory.unlockLevel}`}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </section>
   );
 }

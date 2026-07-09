@@ -1707,6 +1707,8 @@ h3 {
   margin-top: 4px;
 }
 
+/* Safe Mochi page + accessory closet support */
+
 .dashboard-mochi-link {
   display: block;
   height: 100%;
@@ -1756,6 +1758,66 @@ h3 {
   display: flex;
   justify-content: center;
   margin-top: 18px;
+}
+
+.cat-equipped-accessory {
+  position: absolute;
+  z-index: 9;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+.cat-equipped-hat {
+  top: -48px;
+  left: 42px;
+  width: 148px;
+  transform: rotate(-3deg);
+}
+
+.cat-equipped-sunglasses {
+  top: 36px;
+  left: 62px;
+  width: 106px;
+  transform: rotate(0deg);
+}
+
+.cat-equipped-crown {
+  top: 0;
+  left: 86px;
+  width: 60px;
+  transform: rotate(-2deg);
+}
+
+.accessory-chip-button {
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Nunito", Arial, Helvetica, sans-serif;
+}
+
+.accessory-chip-button:disabled {
+  cursor: not-allowed;
+}
+
+.accessory-icon img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.equipped-accessory {
+  border-color: #d58db8;
+  background: #fff0f6;
+  box-shadow:
+    0 12px 24px rgba(134, 101, 156, 0.12),
+    inset 0 0 0 2px rgba(213, 141, 184, 0.18);
+}
+
+.closet-header p {
+  margin: 4px 0 0;
+  color: #8a7a99;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
