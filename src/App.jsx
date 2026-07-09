@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Route, Routes } from "react-router";
+import { NavLink, Route, Routes } from "react-router";
 import "./App.css";
 
 import CatCompanion from "./components/CatCompanion";
@@ -121,202 +121,25 @@ function MiniTopNav() {
   return (
     <nav className="mini-top-nav" aria-label="Main navigation">
       <NavLink end to="/" className={getMiniNavClass}>
-        <span className="nav-dot"></span>
-        <span>Home</span>
-      </NavLink>
-
-      <NavLink to="/tasks" className={getMiniNavClass}>
-        <span className="nav-dot"></span>
-        <span>Tasks</span>
-      </NavLink>
-
-      <NavLink to="/mochi" className={getMiniNavClass}>
-        <span className="nav-dot"></span>
-        <span>Mochi</span>
+        <span>🏠</span>
+        <span>Dashboard</span>
       </NavLink>
 
       <NavLink to="/archive" className={getMiniNavClass}>
-        <span className="nav-dot"></span>
+        <span>🐾</span>
         <span>Archive</span>
+      </NavLink>
+
+      <NavLink to="/mochi" className={getMiniNavClass}>
+        <span>🎀</span>
+        <span>Mochi</span>
       </NavLink>
     </nav>
   );
 }
 
-function PageIntro({ kicker, title, children }) {
-  return (
-    <section className="page-intro-card">
-      <p className="card-kicker">{kicker}</p>
-      <h1>{title}</h1>
-      <p>{children}</p>
-    </section>
-  );
-}
-
-function HomePage({
-  activeTaskCount,
-  completedTaskCount,
-  activeTasks,
+function DashboardPage({
   catProfile,
-}) {
-  const totalXp = catProfile.totalXp || 0;
-  const level = Math.floor(totalXp / 100) + 1;
-  const xpInCurrentLevel = totalXp % 100;
-  const nextTask = activeTasks[0];
-
-  return (
-    <main className="app">
-      <MiniTopNav />
-
-      <section className="dashboard">
-        <Header />
-
-        <section className="home-landing-grid">
-          <div className="home-story-card">
-            <p className="card-kicker">What is Purrductivity?</p>
-            <h2>
-              A softer way to manage tasks without making productivity feel
-              cold.
-            </h2>
-            <p>
-              Purrductivity turns everyday tasks into small quests. You can add
-              work, school, or personal reminders, complete them for XP, and
-              gradually grow Mochi through levels, treats, and unlockable
-              decorations.
-            </p>
-
-            <div className="home-link-row">
-              <Link className="cute-page-link" to="/tasks">
-                Open Tasks
-              </Link>
-
-              <Link className="cute-page-link secondary-page-link" to="/mochi">
-                Visit Mochi
-              </Link>
-            </div>
-          </div>
-
-          <div className="home-product-card">
-            <div className="home-product-top">
-              <div>
-                <p className="card-kicker">Current progress</p>
-                <h2>Mochi is level {level}</h2>
-              </div>
-
-              <div className="home-mochi-mark" aria-hidden="true">
-                <div className="home-mochi-ear home-mochi-ear-left"></div>
-                <div className="home-mochi-ear home-mochi-ear-right"></div>
-                <div className="home-mochi-face">
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            </div>
-
-            <div className="home-progress-line">
-              <div>
-                <span>{xpInCurrentLevel}/100 XP</span>
-                <strong>Next level progress</strong>
-              </div>
-
-              <div className="home-mini-xp-bar">
-                <div
-                  className="home-mini-xp-fill"
-                  style={{ width: `${xpInCurrentLevel}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <div className="home-status-grid">
-              <div>
-                <strong>{activeTaskCount}</strong>
-                <span>Active tasks</span>
-              </div>
-
-              <div>
-                <strong>{completedTaskCount}</strong>
-                <span>Archived</span>
-              </div>
-
-              <div>
-                <strong>{catProfile.treats}</strong>
-                <span>Treats</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="home-how-it-works">
-          <div className="home-section-heading">
-            <p className="card-kicker">How it works</p>
-            <h2>Simple task tracking with a small reward loop.</h2>
-          </div>
-
-          <div className="home-step-grid">
-            <article className="home-step-card">
-              <span className="home-step-number">01</span>
-              <h3>Add a quest</h3>
-              <p>
-                Create a task and choose its priority. Higher-priority tasks are
-                worth more XP.
-              </p>
-            </article>
-
-            <article className="home-step-card">
-              <span className="home-step-number">02</span>
-              <h3>Complete it</h3>
-              <p>
-                Finished tasks move out of the way and are saved in the archive
-                instead of cluttering your active list.
-              </p>
-            </article>
-
-            <article className="home-step-card">
-              <span className="home-step-number">03</span>
-              <h3>Grow Mochi</h3>
-              <p>
-                XP and treats build long-term progress, making your task history
-                feel more motivating.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section className="home-next-card">
-          <div>
-            <p className="card-kicker">Next focus</p>
-            <h2>
-              {nextTask ? nextTask.title : "Your task list is clear right now."}
-            </h2>
-            <p>
-              {nextTask
-                ? `You have ${activeTaskCount} active task${
-                    activeTaskCount === 1 ? "" : "s"
-                  } waiting.`
-                : "Add a new quest when you are ready to start your next focus session."}
-            </p>
-          </div>
-
-          <Link className="text-page-link" to="/tasks">
-            Go to Tasks →
-          </Link>
-        </section>
-
-        <section className="home-project-note">
-          <p className="card-kicker">Learning project</p>
-          <h2>Built to practise React now, AWS later.</h2>
-          <p>
-            The app currently stores data in your browser. Later, it can connect
-            to an AWS backend using API Gateway, Lambda, and DynamoDB so tasks
-            can be saved in the cloud.
-          </p>
-        </section>
-      </section>
-    </main>
-  );
-}
-
-function TasksPage({
   totalTasks,
   activeTaskCount,
   completedTaskCount,
@@ -345,11 +168,30 @@ function TasksPage({
     <main className="app">
       <MiniTopNav />
 
-      <section className="dashboard task-page">
-        <PageIntro kicker="Task garden" title="Tasks">
-          Add new quests, filter your active list, and complete tasks to earn XP
-          for Mochi.
-        </PageIntro>
+      <section className="dashboard">
+        <Header />
+
+        <div className="hero-grid">
+          <NavLink
+            to="/mochi"
+            className="dashboard-mochi-link"
+            aria-label="Open Mochi's closet"
+          >
+            <CatCompanion
+              catProfile={catProfile}
+              completedTaskCount={completedTaskCount}
+            />
+          </NavLink>
+
+          <section className="focus-card">
+            <p className="card-kicker">Today&apos;s cosy quest</p>
+            <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
+            <p>
+              Complete active tasks to collect XP. Click Mochi to visit her
+              closet, view rewards, and customize her accessories.
+            </p>
+          </section>
+        </div>
 
         <div className="stats-grid">
           <StatsCard
@@ -456,59 +298,6 @@ function TasksPage({
   );
 }
 
-function MochiPage({ catProfile, completedTaskCount }) {
-  return (
-    <main className="app">
-      <MiniTopNav />
-
-      <section className="dashboard mochi-page">
-        <PageIntro kicker="Mochi's room" title="Mochi">
-          Track XP, treats, levels, and unlocked accessories in one dedicated
-          cosy space.
-        </PageIntro>
-
-        <div className="mochi-layout">
-          <CatCompanion
-            catProfile={catProfile}
-            completedTaskCount={completedTaskCount}
-          />
-
-          <section className="mochi-info-card">
-            <p className="card-kicker">How Mochi grows</p>
-            <h2>Complete tasks to unlock more decorations.</h2>
-            <p>
-              Each completed quest gives Mochi XP and treats. Higher-priority
-              tasks give bigger rewards, and new level milestones unlock extra
-              room details and accessories.
-            </p>
-
-            <div className="mochi-reward-list">
-              <div>
-                <strong>Low</strong>
-                <span>+5 XP</span>
-              </div>
-
-              <div>
-                <strong>Medium</strong>
-                <span>+10 XP</span>
-              </div>
-
-              <div>
-                <strong>High</strong>
-                <span>+15 XP</span>
-              </div>
-            </div>
-
-            <Link className="cute-page-link" to="/tasks">
-              Complete a Quest
-            </Link>
-          </section>
-        </div>
-      </section>
-    </main>
-  );
-}
-
 function ArchivePage({
   completedHistory,
   completedTaskCount,
@@ -585,6 +374,29 @@ function ArchivePage({
           onRestoreTask={handleRestoreTask}
           onDeleteTask={handleDeleteTask}
         />
+      </section>
+    </main>
+  );
+}
+
+function MochiPage({ catProfile, completedTaskCount }) {
+  return (
+    <main className="app">
+      <MiniTopNav />
+
+      <section className="dashboard mochi-page mochi-only-page">
+        <div className="mochi-only-layout">
+          <CatCompanion
+            catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
+          />
+        </div>
+
+        <div className="mochi-back-row">
+          <NavLink to="/" className="cute-page-link">
+            ← Back to dashboard
+          </NavLink>
+        </div>
       </section>
     </main>
   );
@@ -753,52 +565,33 @@ function App() {
     return new Date(taskB.completedAt) - new Date(taskA.completedAt);
   });
 
-  const taskPageProps = {
-    totalTasks,
-    activeTaskCount,
-    completedTaskCount,
-    highPriorityTasks,
-    newTaskTitle,
-    setNewTaskTitle,
-    newTaskPriority,
-    setNewTaskPriority,
-    handleAddTask,
-    activeFilter,
-    setActiveFilter,
-    searchQuery,
-    setSearchQuery,
-    sortOption,
-    setSortOption,
-    displayedTasks,
-    handleCompleteTask,
-    handleDeleteTask,
-  };
+  const dashboardElement = (
+    <DashboardPage
+      catProfile={catProfile}
+      totalTasks={totalTasks}
+      activeTaskCount={activeTaskCount}
+      completedTaskCount={completedTaskCount}
+      highPriorityTasks={highPriorityTasks}
+      newTaskTitle={newTaskTitle}
+      setNewTaskTitle={setNewTaskTitle}
+      newTaskPriority={newTaskPriority}
+      setNewTaskPriority={setNewTaskPriority}
+      handleAddTask={handleAddTask}
+      activeFilter={activeFilter}
+      setActiveFilter={setActiveFilter}
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      sortOption={sortOption}
+      setSortOption={setSortOption}
+      displayedTasks={displayedTasks}
+      handleCompleteTask={handleCompleteTask}
+      handleDeleteTask={handleDeleteTask}
+    />
+  );
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <HomePage
-            activeTaskCount={activeTaskCount}
-            completedTaskCount={completedTaskCount}
-            activeTasks={activeTasks}
-            catProfile={catProfile}
-          />
-        }
-      />
-
-      <Route path="/tasks" element={<TasksPage {...taskPageProps} />} />
-
-      <Route
-        path="/mochi"
-        element={
-          <MochiPage
-            catProfile={catProfile}
-            completedTaskCount={completedTaskCount}
-          />
-        }
-      />
+      <Route path="/" element={dashboardElement} />
 
       <Route
         path="/archive"
@@ -814,16 +607,16 @@ function App() {
       />
 
       <Route
-        path="*"
+        path="/mochi"
         element={
-          <HomePage
-            activeTaskCount={activeTaskCount}
-            completedTaskCount={completedTaskCount}
-            activeTasks={activeTasks}
+          <MochiPage
             catProfile={catProfile}
+            completedTaskCount={completedTaskCount}
           />
         }
       />
+
+      <Route path="*" element={dashboardElement} />
     </Routes>
   );
 }
