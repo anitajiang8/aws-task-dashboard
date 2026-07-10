@@ -17,10 +17,10 @@ const CAT_PROFILE_STORAGE_KEY = "purrductivity-cat-profile";
 
 const ACCESSORIES = [
   {
-    id: "classic",
-    name: "Classic Set",
+    id: "none",
+    name: "Nothing Equipped",
     image: null,
-    emoji: "🐱",
+    emoji: "🤍",
     unlockLevel: 1,
   },
   {
@@ -113,7 +113,7 @@ const DEFAULT_CAT_PROFILE = {
   catName: "Mochi",
   totalXp: 0,
   treats: 0,
-  equippedAccessory: "classic",
+  equippedAccessory: "none",
 };
 
 function getTaskRewardXp(priority) {

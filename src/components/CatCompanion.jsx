@@ -24,13 +24,12 @@ function CatCompanion({
       (accessory) => accessory.id === catProfile.equippedAccessory
     ) || accessories[0];
 
-  const equippedId = equippedAccessory?.id || "classic";
+  const equippedId = equippedAccessory?.id || "none";
 
-  const showClassicSet = equippedId === "classic";
-  const showBow = showClassicSet || equippedId === "bow";
-  const showCollar = showClassicSet || equippedId === "star-collar";
-  const showCushion = showClassicSet || equippedId === "cloud-cushion";
-  const showSparkles = showClassicSet || equippedId === "sparkles";
+  const showBow = equippedId === "bow";
+  const showCollar = equippedId === "star-collar";
+  const showCushion = equippedId === "cloud-cushion";
+  const showSparkles = equippedId === "sparkles";
 
   function handleAccessoryClick(accessory) {
     const isUnlocked = level >= accessory.unlockLevel;
@@ -42,8 +41,8 @@ function CatCompanion({
     onEquipAccessory(accessory.id);
   }
 
-  return (
-    <section className="cat-card">
+  const catMainContent = (
+    <>
       <div className="cat-card-top">
         <div>
           <p className="card-kicker">Mochi&apos;s corner</p>
@@ -165,57 +164,70 @@ function CatCompanion({
           <span>Quests</span>
         </div>
       </div>
+    </>
+  );
 
-      {showCloset && (
-        <section className="closet-section">
-          <div className="closet-header">
-            <div>
-              <h3>Mochi&apos;s Closet</h3>
-              <p>Choose an accessory for Mochi to wear.</p>
-            </div>
+  const closetContent = (
+    <section className="closet-section side-closet-section">
+      <div className="closet-header">
+        <div>
+          <h3>Mochi&apos;s Closet</h3>
+          <p>Choose an accessory for Mochi to wear.</p>
+        </div>
 
-            <span>{accessories.length} items</span>
-          </div>
+        <span>{accessories.length} items</span>
+      </div>
 
-          <div className="accessory-grid">
-            {accessories.map((accessory) => {
-              const isUnlocked = level >= accessory.unlockLevel;
-              const isEquipped = catProfile.equippedAccessory === accessory.id;
+      <div className="accessory-grid">
+        {accessories.map((accessory) => {
+          const isUnlocked = level >= accessory.unlockLevel;
+          const isEquipped = catProfile.equippedAccessory === accessory.id;
 
-              return (
-                <button
-                  key={accessory.id}
-                  type="button"
-                  className={`accessory-chip accessory-chip-button ${
-                    isUnlocked ? "unlocked-accessory" : "locked-accessory"
-                  } ${isEquipped ? "equipped-accessory" : ""}`}
-                  onClick={() => handleAccessoryClick(accessory)}
-                  disabled={!isUnlocked}
-                >
-                  <span className="accessory-icon">
-                    {accessory.image ? (
-                      <img src={accessory.image} alt="" aria-hidden="true" />
-                    ) : (
-                      accessory.emoji
-                    )}
-                  </span>
+          return (
+            <button
+              key={accessory.id}
+              type="button"
+              className={`accessory-chip accessory-chip-button ${
+                isUnlocked ? "unlocked-accessory" : "locked-accessory"
+              } ${isEquipped ? "equipped-accessory" : ""}`}
+              onClick={() => handleAccessoryClick(accessory)}
+              disabled={!isUnlocked}
+            >
+              <span className="accessory-icon">
+                {accessory.image ? (
+                  <img src={accessory.image} alt="" aria-hidden="true" />
+                ) : (
+                  accessory.emoji
+                )}
+              </span>
 
-                  <span>
-                    <strong>{accessory.name}</strong>
-                    <span>
-                      {isEquipped
-                        ? "Equipped"
-                        : isUnlocked
-                          ? "Click to equip"
-                          : `Unlocks at Level ${accessory.unlockLevel}`}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
+              <span>
+                <strong>{accessory.name}</strong>
+                <span>
+                  {isEquipped
+                    ? "Equipped"
+                    : isUnlocked
+                      ? "Click to equip"
+                      : `Unlocks at Level ${accessory.unlockLevel}`}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+
+  if (!showCloset) {
+    return <section className="cat-card">{catMainContent}</section>;
+  }
+
+  return (
+    <section className="cat-card cat-card-with-closet">
+      <div className="cat-card-side-layout">
+        <div className="cat-main-panel">{catMainContent}</div>
+        {closetContent}
+      </div>
     </section>
   );
 }
