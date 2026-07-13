@@ -19,17 +19,18 @@ function CatCompanion({
   const xpProgress = getXpProgress(catProfile.totalXp);
   const xpPercentage = (xpProgress / XP_PER_LEVEL) * 100;
 
-  const equippedAccessory =
-    accessories.find(
-      (accessory) => accessory.id === catProfile.equippedAccessory
-    ) || accessories[0];
+  const equippedAccessoryIds = Array.isArray(catProfile.equippedAccessories)
+    ? catProfile.equippedAccessories
+    : [];
 
-  const equippedId = equippedAccessory?.id || "none";
+  const equippedAccessories = accessories.filter((accessory) =>
+    equippedAccessoryIds.includes(accessory.id)
+  );
 
-  const showBow = equippedId === "bow";
-  const showCollar = equippedId === "star-collar";
-  const showCushion = equippedId === "cloud-cushion";
-  const showSparkles = equippedId === "sparkles";
+  const showBow = equippedAccessoryIds.includes("bow");
+  const showCollar = equippedAccessoryIds.includes("star-collar");
+  const showCushion = equippedAccessoryIds.includes("cloud-cushion");
+  const showSparkles = equippedAccessoryIds.includes("sparkles");
 
   function handleAccessoryClick(accessory) {
     const isUnlocked = level >= accessory.unlockLevel;
@@ -62,14 +63,17 @@ function CatCompanion({
         )}
 
         <div className="animated-cat" aria-label={`${catProfile.catName} the cat`}>
-          {equippedAccessory?.image && (
-            <img
-              className={`cat-equipped-accessory cat-equipped-${equippedAccessory.id}`}
-              src={equippedAccessory.image}
-              alt=""
-              aria-hidden="true"
-            />
-          )}
+          {equippedAccessories
+            .filter((accessory) => accessory.image)
+            .map((accessory) => (
+              <img
+                key={accessory.id}
+                className={`cat-equipped-accessory cat-equipped-${accessory.id}`}
+                src={accessory.image}
+                alt=""
+                aria-hidden="true"
+              />
+            ))}
 
           <div className="cat-shadow"></div>
 
@@ -172,7 +176,7 @@ function CatCompanion({
       <div className="closet-header">
         <div>
           <h3>Mochi&apos;s Closet</h3>
-          <p>Choose an accessory for Mochi to wear.</p>
+          <p>Choose accessories for Mochi to wear.</p>
         </div>
 
         <span>{accessories.length} items</span>
@@ -181,7 +185,10 @@ function CatCompanion({
       <div className="accessory-grid">
         {accessories.map((accessory) => {
           const isUnlocked = level >= accessory.unlockLevel;
-          const isEquipped = catProfile.equippedAccessory === accessory.id;
+          const isEquipped =
+            accessory.id === "none"
+              ? equippedAccessoryIds.length === 0
+              : equippedAccessoryIds.includes(accessory.id);
 
           return (
             <button
@@ -205,7 +212,9 @@ function CatCompanion({
                 <strong>{accessory.name}</strong>
                 <span>
                   {isEquipped
-                    ? "Equipped"
+                    ? accessory.id === "none"
+                      ? "Default"
+                      : "Equipped"
                     : isUnlocked
                       ? "Click to equip"
                       : `Unlocks at Level ${accessory.unlockLevel}`}

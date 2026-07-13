@@ -113,7 +113,7 @@ const DEFAULT_CAT_PROFILE = {
   catName: "Mochi",
   totalXp: 0,
   treats: 0,
-  equippedAccessory: "none",
+  equippedAccessories: [],
 };
 
 function getTaskRewardXp(priority) {
@@ -166,18 +166,27 @@ function loadSavedCatProfile() {
 
   try {
     const parsedProfile = JSON.parse(savedProfile);
-    const savedAccessory = parsedProfile.equippedAccessory;
-    const validAccessory = ACCESSORIES.some(
-      (accessory) => accessory.id === savedAccessory
-    );
+    const validAccessoryIds = ACCESSORIES.map((accessory) => accessory.id);
+
+    const savedAccessories = Array.isArray(parsedProfile.equippedAccessories)
+      ? parsedProfile.equippedAccessories.filter((accessoryId) =>
+          validAccessoryIds.includes(accessoryId)
+        )
+      : [];
+
+    const legacyAccessory =
+      parsedProfile.equippedAccessory &&
+      parsedProfile.equippedAccessory !== "none" &&
+      validAccessoryIds.includes(parsedProfile.equippedAccessory)
+        ? [parsedProfile.equippedAccessory]
+        : [];
 
     return {
       catName: parsedProfile.catName || DEFAULT_CAT_PROFILE.catName,
       totalXp: parsedProfile.totalXp || 0,
       treats: parsedProfile.treats || 0,
-      equippedAccessory: validAccessory
-        ? savedAccessory
-        : DEFAULT_CAT_PROFILE.equippedAccessory,
+      equippedAccessories:
+        savedAccessories.length > 0 ? savedAccessories : legacyAccessory,
     };
   } catch {
     return DEFAULT_CAT_PROFILE;
@@ -584,10 +593,29 @@ function App() {
   }
 
   function handleEquipAccessory(accessoryId) {
-    setCatProfile((currentProfile) => ({
-      ...currentProfile,
-      equippedAccessory: accessoryId,
-    }));
+    setCatProfile((currentProfile) => {
+      if (accessoryId === "none") {
+        return {
+          ...currentProfile,
+          equippedAccessories: [],
+        };
+      }
+
+      const currentAccessories = Array.isArray(
+        currentProfile.equippedAccessories
+      )
+        ? currentProfile.equippedAccessories
+        : [];
+
+      const isAlreadyEquipped = currentAccessories.includes(accessoryId);
+
+      return {
+        ...currentProfile,
+        equippedAccessories: isAlreadyEquipped
+          ? currentAccessories.filter((id) => id !== accessoryId)
+          : [...currentAccessories, accessoryId],
+      };
+    });
   }
 
   const activeTasks = tasks.filter((task) => task.status !== "done");
