@@ -1111,14 +1111,48 @@ h3 {
 
 .task-form button,
 .task-actions button {
-  border: none;
+  border: 2px solid transparent;
   border-radius: 18px;
   padding: 12px 16px;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* Primary: the one clear "do this" action per view (add a task, complete a task) */
+.task-form button,
+.task-actions .complete-button {
   color: white;
-  background: linear-gradient(135deg, #d98fbb, #a99cf4);
-  box-shadow: 0 12px 22px rgba(169, 156, 244, 0.25);
+  background: #b4547f;
+}
+
+.task-form button:hover,
+.task-actions .complete-button:hover {
+  background: #9c4570;
+}
+
+/* Secondary: a real action, but not the one the eye should land on first */
+.task-actions .restore-button {
+  color: white;
+  background: #4d8fa6;
+}
+
+.task-actions .restore-button:hover {
+  background: #3d7688;
+}
+
+/* Ghost: destructive, so it shouldn't compete visually with primary/secondary */
+.task-actions .delete-button {
+  color: #b4547f;
+  background: transparent;
+  border-color: #eaddec;
+}
+
+.task-actions .delete-button:hover {
+  border-color: #d58db8;
+  background: #fff0f6;
 }
 
 .filter-bar {
@@ -1275,14 +1309,6 @@ h3 {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
-}
-
-.task-actions .restore-button {
-  background: linear-gradient(135deg, #a8d5ba, #86c5da);
-}
-
-.task-actions .delete-button {
-  background: linear-gradient(135deg, #f29aa9, #d96d7f);
 }
 
 .empty-message {
@@ -1524,15 +1550,22 @@ h3 {
   align-items: center;
   justify-content: center;
   width: fit-content;
-  border: none;
+  border: 2px solid #eaddec;
   border-radius: 18px;
   padding: 12px 16px;
   font-family: "Nunito", Arial, Helvetica, sans-serif;
   font-weight: 800;
-  color: white;
+  color: #9c5d87;
   text-decoration: none;
-  background: linear-gradient(135deg, #d98fbb, #a99cf4);
-  box-shadow: 0 12px 22px rgba(169, 156, 244, 0.25);
+  background: #ffffff;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.cute-page-link:hover {
+  border-color: #d58db8;
+  background: #fff0f6;
 }
 
 .secondary-page-link {
