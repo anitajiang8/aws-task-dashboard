@@ -8,7 +8,6 @@ function TaskForm({
   return (
     <form className="task-form" onSubmit={onAddTask}>
       <div className="form-text">
-        <p className="card-kicker">New quest</p>
         <h2>Add something for future you</h2>
       </div>
 

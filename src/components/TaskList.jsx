@@ -14,9 +14,6 @@ function TaskList({
     <section className={`task-list task-list-${variant}`}>
       <div className="task-list-header">
         <div>
-          <p className="card-kicker">
-            {variant === "completed" ? "Archive" : "Focus list"}
-          </p>
           <h2>{title}</h2>
           {subtitle && <p>{subtitle}</p>}
         </div>
