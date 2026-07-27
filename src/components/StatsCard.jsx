@@ -1,7 +1,9 @@
-function StatsCard({ icon, label, value, helper }) {
+function StatsCard({ iconClass, label, value, helper }) {
   return (
     <div className="stat-card">
-      <div className="stat-icon">{icon}</div>
+      <div className="stat-icon">
+        <span className={`stat-icon-mark ${iconClass}`} aria-hidden="true"></span>
+      </div>
 
       <div>
         <span>{label}</span>

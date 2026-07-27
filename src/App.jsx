@@ -275,25 +275,25 @@ function DashboardPage({
 
         <div className="stats-grid">
           <StatsCard
-            icon="ALL"
+            iconClass="stat-icon-total"
             label="Total Quests"
             value={totalTasks}
             helper="All tasks created"
           />
           <StatsCard
-            icon="OPEN"
+            iconClass="stat-icon-active"
             label="Active"
             value={activeTaskCount}
             helper="Still waiting for you"
           />
           <StatsCard
-            icon="DONE"
+            iconClass="stat-icon-done"
             label="Completed"
             value={completedTaskCount}
             helper="Saved in archive"
           />
           <StatsCard
-            icon="HIGH"
+            iconClass="stat-icon-high"
             label="High Priority"
             value={highPriorityTasks}
             helper="Needs extra focus"
