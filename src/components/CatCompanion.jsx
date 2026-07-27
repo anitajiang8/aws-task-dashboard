@@ -50,15 +50,17 @@ function CatCompanion({
           <h2>{catProfile.catName}</h2>
         </div>
 
-        <div className="cat-avatar">🐱</div>
+        <div className="cat-avatar" aria-hidden="true">
+          <span className="cat-avatar-mark"></span>
+        </div>
       </div>
 
       <div className="cat-room">
         {showSparkles && (
           <>
-            <span className="floating-sparkle sparkle-one">✦</span>
-            <span className="floating-sparkle sparkle-two">♡</span>
-            <span className="floating-sparkle sparkle-three">✧</span>
+            <span className="floating-sparkle sparkle-one"></span>
+            <span className="floating-sparkle sparkle-two"></span>
+            <span className="floating-sparkle sparkle-three"></span>
           </>
         )}
 
@@ -131,7 +133,7 @@ function CatCompanion({
 
           {showCollar && (
             <div className="cat-collar">
-              <div className="collar-charm">✦</div>
+              <div className="collar-charm">M</div>
             </div>
           )}
         </div>
@@ -204,7 +206,10 @@ function CatCompanion({
                 {accessory.image ? (
                   <img src={accessory.image} alt="" aria-hidden="true" />
                 ) : (
-                  accessory.emoji
+                  <span
+                    className={`closet-icon-mark ${accessory.iconClass}`}
+                    aria-hidden="true"
+                  ></span>
                 )}
               </span>
 

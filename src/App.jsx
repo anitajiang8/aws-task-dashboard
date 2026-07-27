@@ -20,56 +20,56 @@ const ACCESSORIES = [
     id: "none",
     name: "Nothing Equipped",
     image: null,
-    emoji: "🤍",
+    iconClass: "accessory-icon-none",
     unlockLevel: 1,
   },
   {
     id: "bow",
     name: "Pink Bow",
     image: null,
-    emoji: "🎀",
+    iconClass: "accessory-icon-bow",
     unlockLevel: 1,
   },
   {
     id: "star-collar",
     name: "Star Collar",
     image: null,
-    emoji: "✦",
+    iconClass: "accessory-icon-collar",
     unlockLevel: 1,
   },
   {
     id: "cloud-cushion",
     name: "Cloud Cushion",
     image: null,
-    emoji: "☁️",
+    iconClass: "accessory-icon-cushion",
     unlockLevel: 1,
   },
   {
     id: "sparkles",
     name: "Room Sparkles",
     image: null,
-    emoji: "✨",
+    iconClass: "accessory-icon-sparkles",
     unlockLevel: 1,
   },
   {
     id: "hat",
     name: "Cozy Hat",
     image: hatIcon,
-    emoji: null,
+    iconClass: null,
     unlockLevel: 1,
   },
   {
     id: "sunglasses",
     name: "Focus Sunglasses",
     image: sunglassesIcon,
-    emoji: null,
+    iconClass: null,
     unlockLevel: 2,
   },
   {
     id: "crown",
     name: "Productivity Crown",
     image: crownIcon,
-    emoji: null,
+    iconClass: null,
     unlockLevel: 3,
   },
 ];
@@ -201,18 +201,15 @@ function MiniTopNav() {
   return (
     <nav className="mini-top-nav" aria-label="Main navigation">
       <NavLink end to="/" className={getMiniNavClass}>
-        <span>🏠</span>
-        <span>Dashboard</span>
+        Dashboard
       </NavLink>
 
       <NavLink to="/archive" className={getMiniNavClass}>
-        <span>🐾</span>
-        <span>Archive</span>
+        Archive
       </NavLink>
 
       <NavLink to="/mochi" className={getMiniNavClass}>
-        <span>🎀</span>
-        <span>Mochi</span>
+        Mochi
       </NavLink>
     </nav>
   );
@@ -278,25 +275,25 @@ function DashboardPage({
 
         <div className="stats-grid">
           <StatsCard
-            icon="🌸"
+            icon="ALL"
             label="Total Quests"
             value={totalTasks}
             helper="All tasks created"
           />
           <StatsCard
-            icon="🧁"
+            icon="OPEN"
             label="Active"
             value={activeTaskCount}
             helper="Still waiting for you"
           />
           <StatsCard
-            icon="✨"
+            icon="DONE"
             label="Completed"
             value={completedTaskCount}
             helper="Saved in archive"
           />
           <StatsCard
-            icon="🎀"
+            icon="HIGH"
             label="High Priority"
             value={highPriorityTasks}
             helper="Needs extra focus"
@@ -405,14 +402,10 @@ function ArchivePage({
           </div>
 
           <div className="archive-hero-art" aria-hidden="true">
-            <span className="archive-art-sparkle archive-art-sparkle-one">
-              ✦
-            </span>
-            <span className="archive-art-sparkle archive-art-sparkle-two">
-              ♡
-            </span>
-            <div className="archive-yarn-ball">🧶</div>
-            <div className="archive-paw-card">🐾</div>
+            <span className="archive-art-sparkle archive-art-sparkle-one"></span>
+            <span className="archive-art-sparkle archive-art-sparkle-two"></span>
+            <div className="archive-yarn-ball"></div>
+            <div className="archive-paw-card"></div>
           </div>
         </section>
 
@@ -437,7 +430,7 @@ function ArchivePage({
         </div>
 
         <section className="archive-note-card">
-          <div className="archive-note-icon">📚</div>
+          <div className="archive-note-icon" aria-hidden="true"></div>
           <div>
             <h2>Completed quests stay out of your way.</h2>
             <p>
@@ -485,7 +478,7 @@ function MochiPage({
 
         <div className="mochi-back-row">
           <NavLink to="/" className="cute-page-link">
-            ← Back to dashboard
+            Back to dashboard
           </NavLink>
         </div>
       </section>
