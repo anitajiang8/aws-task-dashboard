@@ -962,7 +962,7 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #fdf8ee;
+  background: #f4f0fc;
 }
 
 .focus-card h2 {
@@ -1175,6 +1175,21 @@ h3 {
   border-radius: 18px;
   background: #fff0f6;
   color: #93507c;
+}
+
+.stat-icon.stat-icon-active {
+  background: #f0edfb;
+  color: #6f5fc0;
+}
+
+.stat-icon.stat-icon-done {
+  background: #e8f7ec;
+  color: #4f8b6e;
+}
+
+.stat-icon.stat-icon-high {
+  background: #fff1e6;
+  color: #a5652f;
 }
 
 .stat-card span {
@@ -1903,7 +1918,7 @@ h3 {
   height: 24px;
 }
 
-.stat-icon-total::before {
+.stat-icon-mark.stat-icon-total::before {
   content: "";
   position: absolute;
   left: 2px;
@@ -1917,7 +1932,7 @@ h3 {
     0 14px 0 currentColor;
 }
 
-.stat-icon-active::before {
+.stat-icon-mark.stat-icon-active::before {
   content: "";
   position: absolute;
   left: 3px;
@@ -1928,8 +1943,8 @@ h3 {
   border: 3px solid currentColor;
 }
 
-.stat-icon-done::before,
-.stat-icon-done::after {
+.stat-icon-mark.stat-icon-done::before,
+.stat-icon-mark.stat-icon-done::after {
   content: "";
   position: absolute;
   height: 3px;
@@ -1937,21 +1952,21 @@ h3 {
   background: currentColor;
 }
 
-.stat-icon-done::before {
+.stat-icon-mark.stat-icon-done::before {
   left: 3px;
   top: 13px;
   width: 8px;
   transform: rotate(45deg);
 }
 
-.stat-icon-done::after {
+.stat-icon-mark.stat-icon-done::after {
   left: 8px;
   top: 10px;
   width: 14px;
   transform: rotate(-45deg);
 }
 
-.stat-icon-high::before {
+.stat-icon-mark.stat-icon-high::before {
   content: "";
   position: absolute;
   left: 10px;
@@ -1962,7 +1977,7 @@ h3 {
   background: currentColor;
 }
 
-.stat-icon-high::after {
+.stat-icon-mark.stat-icon-high::after {
   content: "";
   position: absolute;
   left: 10px;
@@ -1976,32 +1991,36 @@ h3 {
 .cat-avatar-mark {
   position: relative;
   display: block;
-  width: 34px;
-  height: 30px;
+  width: 32px;
+  height: 26px;
+  margin-top: 9px;
   border: 3px solid #c09f88;
   border-radius: 46% 46% 42% 42%;
-  background: #f7f3ea;
+  background:
+    radial-gradient(circle 1.6px at 36% 48%, #7a3557 100%, transparent 100%),
+    radial-gradient(circle 1.6px at 64% 48%, #7a3557 100%, transparent 100%),
+    #f7f3ea;
 }
 
 .cat-avatar-mark::before,
 .cat-avatar-mark::after {
   content: "";
   position: absolute;
-  top: -12px;
-  width: 16px;
-  height: 16px;
-  background: #f7f3ea;
-  border-top: 3px solid #c09f88;
-  border-left: 3px solid #c09f88;
-  transform: rotate(45deg);
+  top: -9px;
+  width: 15px;
+  height: 13px;
+  background: #dcc9b3;
+  clip-path: polygon(50% 0%, 8% 100%, 92% 100%);
 }
 
 .cat-avatar-mark::before {
-  left: 2px;
+  left: -3px;
+  transform: rotate(-8deg);
 }
 
 .cat-avatar-mark::after {
-  right: 2px;
+  right: -3px;
+  transform: rotate(8deg);
 }
 
 .closet-icon-mark {
