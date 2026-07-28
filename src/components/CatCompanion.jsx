@@ -55,10 +55,6 @@ function CatCompanion({
           <p className="card-kicker">Mochi&apos;s corner</p>
           <h2>{catProfile.catName}</h2>
         </div>
-
-        <div className="cat-avatar" aria-hidden="true">
-          <span className="cat-avatar-mark"></span>
-        </div>
       </div>
 
       <div className="cat-room">
