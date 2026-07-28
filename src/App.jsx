@@ -6,6 +6,7 @@ import crownIcon from "./assets/crown.svg";
 import hatIcon from "./assets/hat.svg";
 import sunglassesIcon from "./assets/sunglasses.svg";
 
+import CalendarView from "./components/CalendarView";
 import CatCompanion, { getCatLevel } from "./components/CatCompanion";
 import Header from "./components/Header";
 import StatsCard from "./components/StatsCard";
@@ -256,6 +257,10 @@ function MiniTopNav() {
         Tasks
       </NavLink>
 
+      <NavLink to="/calendar" className={getMiniNavClass}>
+        Calendar
+      </NavLink>
+
       <NavLink to="/archive" className={getMiniNavClass}>
         Archive
       </NavLink>
@@ -492,6 +497,29 @@ function TasksPage({
           onDeleteTask={handleDeleteTask}
           onUpdateTask={handleUpdateTask}
         />
+      </section>
+    </main>
+  );
+}
+
+function CalendarPage({ activeTasks }) {
+  return (
+    <main className="app">
+      <MiniTopNav />
+
+      <section className="dashboard">
+        <header className="header">
+          <p className="eyebrow">Plan ahead</p>
+          <h1>Calendar</h1>
+          <p className="subtitle">
+            Your active tasks laid out by due date, week by week or month by
+            month.
+          </p>
+        </header>
+
+        <section className="task-list">
+          <CalendarView tasks={activeTasks} />
+        </section>
       </section>
     </main>
   );
@@ -890,6 +918,8 @@ function App() {
           />
         }
       />
+
+      <Route path="/calendar" element={<CalendarPage activeTasks={activeTasks} />} />
 
       <Route
         path="/archive"
