@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Route, Routes } from "react-router";
+import { NavLink, Outlet, Route, Routes } from "react-router";
 import "./App.css";
 
 import crownIcon from "./assets/crown.svg";
@@ -9,6 +9,7 @@ import sunglassesIcon from "./assets/sunglasses.svg";
 import CalendarView from "./components/CalendarView";
 import CatCompanion, { getCatLevel } from "./components/CatCompanion";
 import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 import StatsCard from "./components/StatsCard";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
@@ -242,33 +243,15 @@ function loadSavedCatProfile() {
   }
 }
 
-function getMiniNavClass({ isActive }) {
-  return isActive ? "mini-nav-tab active-mini-nav-tab" : "mini-nav-tab";
-}
-
-function MiniTopNav() {
+function AppLayout() {
   return (
-    <nav className="mini-top-nav" aria-label="Main navigation">
-      <NavLink end to="/" className={getMiniNavClass}>
-        Home
-      </NavLink>
+    <div className="app-shell">
+      <Sidebar />
 
-      <NavLink to="/tasks" className={getMiniNavClass}>
-        Tasks
-      </NavLink>
-
-      <NavLink to="/calendar" className={getMiniNavClass}>
-        Calendar
-      </NavLink>
-
-      <NavLink to="/archive" className={getMiniNavClass}>
-        Archive
-      </NavLink>
-
-      <NavLink to="/mochi" className={getMiniNavClass}>
-        Mochi
-      </NavLink>
-    </nav>
+      <main className="app">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 
@@ -282,9 +265,6 @@ function HomePage({
   nextUpTasks,
 }) {
   return (
-    <main className="app">
-      <MiniTopNav />
-
       <section className="dashboard">
         <Header />
 
@@ -373,7 +353,6 @@ function HomePage({
           )}
         </section>
       </section>
-    </main>
   );
 }
 
@@ -405,9 +384,6 @@ function TasksPage({
       : "No active tasks match your current filter or search. Try All Active.";
 
   return (
-    <main className="app">
-      <MiniTopNav />
-
       <section className="dashboard">
         <header className="header">
           <p className="eyebrow">Focus mode</p>
@@ -498,15 +474,11 @@ function TasksPage({
           onUpdateTask={handleUpdateTask}
         />
       </section>
-    </main>
   );
 }
 
-function CalendarPage({ activeTasks }) {
+function CalendarPage({ activeTasks, handleCompleteTask, handleDeleteTask, handleUpdateTask }) {
   return (
-    <main className="app">
-      <MiniTopNav />
-
       <section className="dashboard">
         <header className="header">
           <p className="eyebrow">Plan ahead</p>
@@ -517,11 +489,15 @@ function CalendarPage({ activeTasks }) {
           </p>
         </header>
 
-        <section className="task-list">
-          <CalendarView tasks={activeTasks} />
+        <section className="task-list calendar-page-card">
+          <CalendarView
+            tasks={activeTasks}
+            onCompleteTask={handleCompleteTask}
+            onDeleteTask={handleDeleteTask}
+            onUpdateTask={handleUpdateTask}
+          />
         </section>
       </section>
-    </main>
   );
 }
 
@@ -534,9 +510,6 @@ function ArchivePage({
   handleUpdateTask,
 }) {
   return (
-    <main className="app">
-      <MiniTopNav />
-
       <section className="dashboard archive-page">
         <section className="archive-hero">
           <div className="archive-hero-copy">
@@ -600,7 +573,6 @@ function ArchivePage({
           onUpdateTask={handleUpdateTask}
         />
       </section>
-    </main>
   );
 }
 
@@ -611,9 +583,6 @@ function MochiPage({
   handlePurchaseAccessory,
 }) {
   return (
-    <main className="app">
-      <MiniTopNav />
-
       <section className="dashboard mochi-page mochi-only-page">
         <div className="mochi-only-layout">
           <CatCompanion
@@ -631,7 +600,6 @@ function MochiPage({
           </NavLink>
         </div>
       </section>
-    </main>
   );
 }
 
@@ -889,65 +857,77 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={homeElement} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={homeElement} />
 
-      <Route
-        path="/tasks"
-        element={
-          <TasksPage
-            newTaskTitle={newTaskTitle}
-            setNewTaskTitle={setNewTaskTitle}
-            newTaskPriority={newTaskPriority}
-            setNewTaskPriority={setNewTaskPriority}
-            newTaskDueDate={newTaskDueDate}
-            setNewTaskDueDate={setNewTaskDueDate}
-            newTaskCategory={newTaskCategory}
-            setNewTaskCategory={setNewTaskCategory}
-            handleAddTask={handleAddTask}
-            activeFilter={activeFilter}
-            setActiveFilter={setActiveFilter}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-            displayedTasks={displayedTasks}
-            activeTaskCount={activeTaskCount}
-            handleCompleteTask={handleCompleteTask}
-            handleDeleteTask={handleDeleteTask}
-            handleUpdateTask={handleUpdateTask}
-          />
-        }
-      />
+        <Route
+          path="/tasks"
+          element={
+            <TasksPage
+              newTaskTitle={newTaskTitle}
+              setNewTaskTitle={setNewTaskTitle}
+              newTaskPriority={newTaskPriority}
+              setNewTaskPriority={setNewTaskPriority}
+              newTaskDueDate={newTaskDueDate}
+              setNewTaskDueDate={setNewTaskDueDate}
+              newTaskCategory={newTaskCategory}
+              setNewTaskCategory={setNewTaskCategory}
+              handleAddTask={handleAddTask}
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+              displayedTasks={displayedTasks}
+              activeTaskCount={activeTaskCount}
+              handleCompleteTask={handleCompleteTask}
+              handleDeleteTask={handleDeleteTask}
+              handleUpdateTask={handleUpdateTask}
+            />
+          }
+        />
 
-      <Route path="/calendar" element={<CalendarPage activeTasks={activeTasks} />} />
+        <Route
+          path="/calendar"
+          element={
+            <CalendarPage
+              activeTasks={activeTasks}
+              handleCompleteTask={handleCompleteTask}
+              handleDeleteTask={handleDeleteTask}
+              handleUpdateTask={handleUpdateTask}
+            />
+          }
+        />
 
-      <Route
-        path="/archive"
-        element={
-          <ArchivePage
-            completedHistory={completedHistory}
-            completedTaskCount={completedTaskCount}
-            catProfile={catProfile}
-            handleRestoreTask={handleRestoreTask}
-            handleDeleteTask={handleDeleteTask}
-            handleUpdateTask={handleUpdateTask}
-          />
-        }
-      />
+        <Route
+          path="/archive"
+          element={
+            <ArchivePage
+              completedHistory={completedHistory}
+              completedTaskCount={completedTaskCount}
+              catProfile={catProfile}
+              handleRestoreTask={handleRestoreTask}
+              handleDeleteTask={handleDeleteTask}
+              handleUpdateTask={handleUpdateTask}
+            />
+          }
+        />
 
-      <Route
-        path="/mochi"
-        element={
-          <MochiPage
-            catProfile={catProfile}
-            accessories={ACCESSORIES}
-            completedTaskCount={completedTaskCount}
-            handlePurchaseAccessory={handlePurchaseAccessory}
-          />
-        }
-      />
+        <Route
+          path="/mochi"
+          element={
+            <MochiPage
+              catProfile={catProfile}
+              accessories={ACCESSORIES}
+              completedTaskCount={completedTaskCount}
+              handlePurchaseAccessory={handlePurchaseAccessory}
+            />
+          }
+        />
 
-      <Route path="*" element={homeElement} />
+        <Route path="*" element={homeElement} />
+      </Route>
     </Routes>
   );
 }
