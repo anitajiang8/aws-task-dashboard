@@ -92,6 +92,8 @@ const DEFAULT_TASKS = [
     title: "Plan a cosy study session",
     status: "todo",
     priority: "medium",
+    dueDate: null,
+    category: "Learning",
     createdAt: new Date().toISOString(),
     completedAt: null,
     rewardXp: 10,
@@ -102,6 +104,10 @@ const DEFAULT_TASKS = [
     title: "Finish one high-priority task",
     status: "todo",
     priority: "high",
+    dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10),
+    category: "",
     createdAt: new Date().toISOString(),
     completedAt: null,
     rewardXp: 15,
@@ -129,6 +135,8 @@ function normaliseTask(task) {
     title: task.title || "Untitled task",
     status,
     priority,
+    dueDate: task.dueDate || null,
+    category: task.category || "",
     createdAt: task.createdAt || new Date().toISOString(),
     completedAt:
       task.completedAt || (status === "done" ? new Date().toISOString() : null),
@@ -226,6 +234,10 @@ function DashboardPage({
   setNewTaskTitle,
   newTaskPriority,
   setNewTaskPriority,
+  newTaskDueDate,
+  setNewTaskDueDate,
+  newTaskCategory,
+  setNewTaskCategory,
   handleAddTask,
   activeFilter,
   setActiveFilter,
@@ -236,6 +248,7 @@ function DashboardPage({
   displayedTasks,
   handleCompleteTask,
   handleDeleteTask,
+  handleUpdateTask,
 }) {
   const activeEmptyMessage =
     activeTaskCount === 0
@@ -305,6 +318,10 @@ function DashboardPage({
           setNewTaskTitle={setNewTaskTitle}
           newTaskPriority={newTaskPriority}
           setNewTaskPriority={setNewTaskPriority}
+          newTaskDueDate={newTaskDueDate}
+          setNewTaskDueDate={setNewTaskDueDate}
+          newTaskCategory={newTaskCategory}
+          setNewTaskCategory={setNewTaskCategory}
           onAddTask={handleAddTask}
         />
 
@@ -360,6 +377,7 @@ function DashboardPage({
               <option value="priority-high">Priority: high to low</option>
               <option value="priority-low">Priority: low to high</option>
               <option value="title-az">Title A–Z</option>
+              <option value="due-date">Due date</option>
             </select>
           </div>
         </div>
@@ -372,6 +390,7 @@ function DashboardPage({
           variant="active"
           onCompleteTask={handleCompleteTask}
           onDeleteTask={handleDeleteTask}
+          onUpdateTask={handleUpdateTask}
         />
       </section>
     </main>
@@ -384,6 +403,7 @@ function ArchivePage({
   catProfile,
   handleRestoreTask,
   handleDeleteTask,
+  handleUpdateTask,
 }) {
   return (
     <main className="app">
@@ -449,6 +469,7 @@ function ArchivePage({
           variant="completed"
           onRestoreTask={handleRestoreTask}
           onDeleteTask={handleDeleteTask}
+          onUpdateTask={handleUpdateTask}
         />
       </section>
     </main>
@@ -492,6 +513,8 @@ function App() {
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
+  const [newTaskDueDate, setNewTaskDueDate] = useState("");
+  const [newTaskCategory, setNewTaskCategory] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("newest");
@@ -518,6 +541,8 @@ function App() {
       title: newTaskTitle,
       status: "todo",
       priority: newTaskPriority,
+      dueDate: newTaskDueDate || null,
+      category: newTaskCategory.trim(),
       createdAt: new Date().toISOString(),
       completedAt: null,
       rewardXp,
@@ -527,6 +552,16 @@ function App() {
     setTasks([...tasks, newTask]);
     setNewTaskTitle("");
     setNewTaskPriority("medium");
+    setNewTaskDueDate("");
+    setNewTaskCategory("");
+  }
+
+  function handleUpdateTask(taskId, updates) {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, ...updates } : task
+    );
+
+    setTasks(updatedTasks);
   }
 
   function handleCompleteTask(taskId) {
@@ -637,9 +672,14 @@ function App() {
 
       return true;
     })
-    .filter((task) =>
-      task.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    .filter((task) => {
+      const query = searchQuery.toLowerCase();
+
+      return (
+        task.title.toLowerCase().includes(query) ||
+        (task.category || "").toLowerCase().includes(query)
+      );
+    });
 
   const displayedTasks = [...filteredAndSearchedTasks].sort((taskA, taskB) => {
     if (sortOption === "newest") {
@@ -668,6 +708,22 @@ function App() {
       return taskA.title.localeCompare(taskB.title);
     }
 
+    if (sortOption === "due-date") {
+      if (!taskA.dueDate && !taskB.dueDate) {
+        return 0;
+      }
+
+      if (!taskA.dueDate) {
+        return 1;
+      }
+
+      if (!taskB.dueDate) {
+        return -1;
+      }
+
+      return new Date(taskA.dueDate) - new Date(taskB.dueDate);
+    }
+
     return 0;
   });
 
@@ -687,6 +743,10 @@ function App() {
       setNewTaskTitle={setNewTaskTitle}
       newTaskPriority={newTaskPriority}
       setNewTaskPriority={setNewTaskPriority}
+      newTaskDueDate={newTaskDueDate}
+      setNewTaskDueDate={setNewTaskDueDate}
+      newTaskCategory={newTaskCategory}
+      setNewTaskCategory={setNewTaskCategory}
       handleAddTask={handleAddTask}
       activeFilter={activeFilter}
       setActiveFilter={setActiveFilter}
@@ -697,6 +757,7 @@ function App() {
       displayedTasks={displayedTasks}
       handleCompleteTask={handleCompleteTask}
       handleDeleteTask={handleDeleteTask}
+      handleUpdateTask={handleUpdateTask}
     />
   );
 
@@ -713,6 +774,7 @@ function App() {
             catProfile={catProfile}
             handleRestoreTask={handleRestoreTask}
             handleDeleteTask={handleDeleteTask}
+            handleUpdateTask={handleUpdateTask}
           />
         }
       />

@@ -1074,9 +1074,13 @@ h3 {
   margin-bottom: 16px;
 }
 
+.form-title-row {
+  margin-bottom: 12px;
+}
+
 .form-controls {
   display: grid;
-  grid-template-columns: 1fr 240px 150px;
+  grid-template-columns: 1fr 170px 170px 150px;
   gap: 12px;
 }
 
@@ -1138,14 +1142,14 @@ h3 {
   background: #3d7688;
 }
 
-/* Ghost: destructive, so it shouldn't compete visually with primary/secondary */
-.task-actions .delete-button {
+/* Ghost: lower-priority actions that shouldn't compete with primary/secondary */
+.task-actions .ghost-button {
   color: #b4547f;
   background: transparent;
   border-color: #eaddec;
 }
 
-.task-actions .delete-button:hover {
+.task-actions .ghost-button:hover {
   border-color: #d58db8;
   background: #fff0f6;
 }
@@ -1249,6 +1253,11 @@ h3 {
   background: rgba(255, 250, 240, 0.82);
 }
 
+.task-item-editing {
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .task-main {
   min-width: 0;
 }
@@ -1297,6 +1306,47 @@ h3 {
 .priority-badge.high {
   background: #ffe0ea;
   color: #b4547f;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  background: #eef0fb;
+  color: #5c62a6;
+}
+
+.due-badge.overdue {
+  color: #b4547f;
+  font-weight: 800;
+}
+
+.task-edit-row {
+  display: grid;
+  grid-template-columns: 1fr 130px 150px 160px;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.task-edit-row input,
+.task-edit-row select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #eaddec;
+  border-radius: 16px;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #4a365f;
+  font-family: "Nunito", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+}
+
+.task-edit-row input:focus,
+.task-edit-row select:focus {
+  outline: none;
+  border-color: #d58db8;
 }
 
 .task-actions {
@@ -1380,6 +1430,7 @@ h3 {
   .hero-grid,
   .stats-grid,
   .form-controls,
+  .task-edit-row,
   .controls-row,
   .archive-summary-grid,
   .accessory-grid {

@@ -9,6 +9,7 @@ function TaskList({
   onCompleteTask,
   onRestoreTask,
   onDeleteTask,
+  onUpdateTask,
 }) {
   return (
     <section className={`task-list task-list-${variant}`}>
@@ -33,6 +34,7 @@ function TaskList({
               onCompleteTask={onCompleteTask}
               onRestoreTask={onRestoreTask}
               onDeleteTask={onDeleteTask}
+              onUpdateTask={onUpdateTask}
             />
           ))}
         </div>
