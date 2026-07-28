@@ -179,67 +179,111 @@ function CatCompanion({
     </>
   );
 
+  const shopAccessories = accessories.filter(
+    (accessory) => accessory.id !== "none" && !equippedAccessoryIds.includes(accessory.id)
+  );
+
+  function renderAccessoryIcon(accessory) {
+    return accessory.image ? (
+      <img src={accessory.image} alt="" aria-hidden="true" />
+    ) : (
+      <span
+        className={`closet-icon-mark ${accessory.iconClass}`}
+        aria-hidden="true"
+      ></span>
+    );
+  }
+
   const closetContent = (
     <section className="closet-section side-closet-section">
       <div className="closet-header">
         <div>
           <h3>Mochi&apos;s Closet</h3>
-          <p>Choose accessories for Mochi to wear.</p>
+          <p>What Mochi&apos;s wearing, and what&apos;s in the shop.</p>
         </div>
 
         <span>{accessories.length} items</span>
       </div>
 
-      <div className="accessory-grid">
-        {accessories.map((accessory) => {
+      <div className="closet-rod">
+        <div className="closet-rod-bar" aria-hidden="true"></div>
+
+        {equippedAccessories.length === 0 ? (
+          <p className="closet-rod-empty">
+            Nothing on the rod yet — pick something from the shop below.
+          </p>
+        ) : (
+          <div className="closet-rod-items">
+            {equippedAccessories.map((accessory) => (
+              <button
+                key={accessory.id}
+                type="button"
+                className="closet-rod-item"
+                onClick={() => handleAccessoryClick(accessory)}
+                title={`Take off ${accessory.name}`}
+              >
+                <span className="accessory-icon">
+                  {renderAccessoryIcon(accessory)}
+                </span>
+                <span>{accessory.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {equippedAccessories.length > 0 && (
+          <button
+            type="button"
+            className="closet-rod-clear"
+            onClick={() => handleAccessoryClick({ id: "none" })}
+          >
+            Take it all off
+          </button>
+        )}
+      </div>
+
+      <p className="closet-shop-label">Shop</p>
+
+      <div className="shop-grid">
+        {shopAccessories.map((accessory) => {
           const isUnlocked = isAccessoryUnlocked(accessory);
-          const isEquipped =
-            accessory.id === "none"
-              ? equippedAccessoryIds.length === 0
-              : equippedAccessoryIds.includes(accessory.id);
           const meetsLevel = level >= (accessory.unlockLevel || 1);
           const canAfford = catProfile.treats >= (accessory.treatCost || 0);
           const canPurchase = !isUnlocked && meetsLevel && canAfford;
 
-          let statusText;
+          let statusNode;
 
-          if (isEquipped) {
-            statusText = accessory.id === "none" ? "Default" : "Equipped";
-          } else if (isUnlocked) {
-            statusText = "Click to equip";
+          if (isUnlocked) {
+            statusNode = <span className="owned-stamp">Owned</span>;
           } else if (!meetsLevel) {
-            statusText = `Unlocks at Level ${accessory.unlockLevel}`;
-          } else if (!canAfford) {
-            statusText = `Costs ${accessory.treatCost} treats`;
+            statusNode = (
+              <span className="price-tag locked">
+                Unlocks at Level {accessory.unlockLevel}
+              </span>
+            );
           } else {
-            statusText = `Buy for ${accessory.treatCost} treats`;
+            statusNode = (
+              <span className={`price-tag ${canAfford ? "" : "unaffordable"}`}>
+                {canAfford ? "Buy for " : ""}
+                {accessory.treatCost} treats
+              </span>
+            );
           }
 
           return (
             <button
               key={accessory.id}
               type="button"
-              className={`accessory-chip accessory-chip-button ${
-                isUnlocked ? "unlocked-accessory" : "locked-accessory"
-              } ${isEquipped ? "equipped-accessory" : ""}`}
+              className={`shop-tile ${isUnlocked ? "" : "locked-accessory"}`}
               onClick={() => handleAccessoryClick(accessory)}
               disabled={!isUnlocked && !canPurchase}
             >
               <span className="accessory-icon">
-                {accessory.image ? (
-                  <img src={accessory.image} alt="" aria-hidden="true" />
-                ) : (
-                  <span
-                    className={`closet-icon-mark ${accessory.iconClass}`}
-                    aria-hidden="true"
-                  ></span>
-                )}
+                {renderAccessoryIcon(accessory)}
               </span>
 
-              <span>
-                <strong>{accessory.name}</strong>
-                <span>{statusText}</span>
-              </span>
+              <strong>{accessory.name}</strong>
+              {statusNode}
             </button>
           );
         })}
