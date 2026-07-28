@@ -1,6 +1,6 @@
 const XP_PER_LEVEL = 50;
 
-function getCatLevel(totalXp) {
+export function getCatLevel(totalXp) {
   return Math.floor(totalXp / XP_PER_LEVEL) + 1;
 }
 
@@ -12,7 +12,7 @@ function CatCompanion({
   catProfile,
   accessories = [],
   completedTaskCount,
-  onEquipAccessory,
+  onPurchaseAccessory,
   showCloset = true,
 }) {
   const level = getCatLevel(catProfile.totalXp);
@@ -21,6 +21,10 @@ function CatCompanion({
 
   const equippedAccessoryIds = Array.isArray(catProfile.equippedAccessories)
     ? catProfile.equippedAccessories
+    : [];
+
+  const unlockedAccessoryIds = Array.isArray(catProfile.unlockedAccessoryIds)
+    ? catProfile.unlockedAccessoryIds
     : [];
 
   const equippedAccessories = accessories.filter((accessory) =>
@@ -32,14 +36,16 @@ function CatCompanion({
   const showCushion = equippedAccessoryIds.includes("cloud-cushion");
   const showSparkles = equippedAccessoryIds.includes("sparkles");
 
-  function handleAccessoryClick(accessory) {
-    const isUnlocked = level >= accessory.unlockLevel;
+  function isAccessoryUnlocked(accessory) {
+    return accessory.id === "none" || unlockedAccessoryIds.includes(accessory.id);
+  }
 
-    if (!isUnlocked || !onEquipAccessory) {
+  function handleAccessoryClick(accessory) {
+    if (!onPurchaseAccessory) {
       return;
     }
 
-    onEquipAccessory(accessory.id);
+    onPurchaseAccessory(accessory.id);
   }
 
   const catMainContent = (
@@ -186,11 +192,28 @@ function CatCompanion({
 
       <div className="accessory-grid">
         {accessories.map((accessory) => {
-          const isUnlocked = level >= accessory.unlockLevel;
+          const isUnlocked = isAccessoryUnlocked(accessory);
           const isEquipped =
             accessory.id === "none"
               ? equippedAccessoryIds.length === 0
               : equippedAccessoryIds.includes(accessory.id);
+          const meetsLevel = level >= (accessory.unlockLevel || 1);
+          const canAfford = catProfile.treats >= (accessory.treatCost || 0);
+          const canPurchase = !isUnlocked && meetsLevel && canAfford;
+
+          let statusText;
+
+          if (isEquipped) {
+            statusText = accessory.id === "none" ? "Default" : "Equipped";
+          } else if (isUnlocked) {
+            statusText = "Click to equip";
+          } else if (!meetsLevel) {
+            statusText = `Unlocks at Level ${accessory.unlockLevel}`;
+          } else if (!canAfford) {
+            statusText = `Costs ${accessory.treatCost} treats`;
+          } else {
+            statusText = `Buy for ${accessory.treatCost} treats`;
+          }
 
           return (
             <button
@@ -200,7 +223,7 @@ function CatCompanion({
                 isUnlocked ? "unlocked-accessory" : "locked-accessory"
               } ${isEquipped ? "equipped-accessory" : ""}`}
               onClick={() => handleAccessoryClick(accessory)}
-              disabled={!isUnlocked}
+              disabled={!isUnlocked && !canPurchase}
             >
               <span className="accessory-icon">
                 {accessory.image ? (
@@ -215,15 +238,7 @@ function CatCompanion({
 
               <span>
                 <strong>{accessory.name}</strong>
-                <span>
-                  {isEquipped
-                    ? accessory.id === "none"
-                      ? "Default"
-                      : "Equipped"
-                    : isUnlocked
-                      ? "Click to equip"
-                      : `Unlocks at Level ${accessory.unlockLevel}`}
-                </span>
+                <span>{statusText}</span>
               </span>
             </button>
           );

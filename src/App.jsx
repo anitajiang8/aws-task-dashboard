@@ -6,7 +6,7 @@ import crownIcon from "./assets/crown.svg";
 import hatIcon from "./assets/hat.svg";
 import sunglassesIcon from "./assets/sunglasses.svg";
 
-import CatCompanion from "./components/CatCompanion";
+import CatCompanion, { getCatLevel } from "./components/CatCompanion";
 import Header from "./components/Header";
 import StatsCard from "./components/StatsCard";
 import TaskForm from "./components/TaskForm";
@@ -22,6 +22,7 @@ const ACCESSORIES = [
     image: null,
     iconClass: "accessory-icon-none",
     unlockLevel: 1,
+    treatCost: 0,
   },
   {
     id: "bow",
@@ -29,6 +30,7 @@ const ACCESSORIES = [
     image: null,
     iconClass: "accessory-icon-bow",
     unlockLevel: 1,
+    treatCost: 15,
   },
   {
     id: "star-collar",
@@ -36,6 +38,7 @@ const ACCESSORIES = [
     image: null,
     iconClass: "accessory-icon-collar",
     unlockLevel: 1,
+    treatCost: 15,
   },
   {
     id: "cloud-cushion",
@@ -43,6 +46,7 @@ const ACCESSORIES = [
     image: null,
     iconClass: "accessory-icon-cushion",
     unlockLevel: 1,
+    treatCost: 20,
   },
   {
     id: "sparkles",
@@ -50,6 +54,7 @@ const ACCESSORIES = [
     image: null,
     iconClass: "accessory-icon-sparkles",
     unlockLevel: 1,
+    treatCost: 20,
   },
   {
     id: "hat",
@@ -57,6 +62,7 @@ const ACCESSORIES = [
     image: hatIcon,
     iconClass: null,
     unlockLevel: 1,
+    treatCost: 25,
   },
   {
     id: "sunglasses",
@@ -64,6 +70,7 @@ const ACCESSORIES = [
     image: sunglassesIcon,
     iconClass: null,
     unlockLevel: 2,
+    treatCost: 35,
   },
   {
     id: "crown",
@@ -71,6 +78,7 @@ const ACCESSORIES = [
     image: crownIcon,
     iconClass: null,
     unlockLevel: 3,
+    treatCost: 50,
   },
 ];
 
@@ -120,6 +128,7 @@ const DEFAULT_CAT_PROFILE = {
   totalXp: 0,
   treats: 0,
   equippedAccessories: [],
+  unlockedAccessoryIds: [],
 };
 
 function getTaskRewardXp(priority) {
@@ -189,12 +198,27 @@ function loadSavedCatProfile() {
         ? [parsedProfile.equippedAccessory]
         : [];
 
+    const equippedAccessories =
+      savedAccessories.length > 0 ? savedAccessories : legacyAccessory;
+
+    const savedUnlockedIds = Array.isArray(parsedProfile.unlockedAccessoryIds)
+      ? parsedProfile.unlockedAccessoryIds.filter((accessoryId) =>
+          validAccessoryIds.includes(accessoryId)
+        )
+      : [];
+
+    // Migration: anything already equipped from before treats-as-currency
+    // existed should stay unlocked, so upgrading doesn't strip Mochi's outfit.
+    const unlockedAccessoryIds = Array.from(
+      new Set([...savedUnlockedIds, ...equippedAccessories])
+    );
+
     return {
       catName: parsedProfile.catName || DEFAULT_CAT_PROFILE.catName,
       totalXp: parsedProfile.totalXp || 0,
       treats: parsedProfile.treats || 0,
-      equippedAccessories:
-        savedAccessories.length > 0 ? savedAccessories : legacyAccessory,
+      equippedAccessories,
+      unlockedAccessoryIds,
     };
   } catch {
     return DEFAULT_CAT_PROFILE;
@@ -480,7 +504,7 @@ function MochiPage({
   catProfile,
   accessories,
   completedTaskCount,
-  handleEquipAccessory,
+  handlePurchaseAccessory,
 }) {
   return (
     <main className="app">
@@ -492,7 +516,7 @@ function MochiPage({
             catProfile={catProfile}
             accessories={accessories}
             completedTaskCount={completedTaskCount}
-            onEquipAccessory={handleEquipAccessory}
+            onPurchaseAccessory={handlePurchaseAccessory}
             showCloset={true}
           />
         </div>
@@ -620,7 +644,7 @@ function App() {
     setTasks(remainingTasks);
   }
 
-  function handleEquipAccessory(accessoryId) {
+  function handlePurchaseAccessory(accessoryId) {
     setCatProfile((currentProfile) => {
       if (accessoryId === "none") {
         return {
@@ -635,13 +659,39 @@ function App() {
         ? currentProfile.equippedAccessories
         : [];
 
-      const isAlreadyEquipped = currentAccessories.includes(accessoryId);
+      const unlockedAccessoryIds = Array.isArray(
+        currentProfile.unlockedAccessoryIds
+      )
+        ? currentProfile.unlockedAccessoryIds
+        : [];
+
+      const isAlreadyUnlocked = unlockedAccessoryIds.includes(accessoryId);
+
+      if (isAlreadyUnlocked) {
+        const isAlreadyEquipped = currentAccessories.includes(accessoryId);
+
+        return {
+          ...currentProfile,
+          equippedAccessories: isAlreadyEquipped
+            ? currentAccessories.filter((id) => id !== accessoryId)
+            : [...currentAccessories, accessoryId],
+        };
+      }
+
+      const accessory = ACCESSORIES.find((item) => item.id === accessoryId);
+      const level = getCatLevel(currentProfile.totalXp);
+      const meetsLevel = level >= (accessory?.unlockLevel || 1);
+      const canAfford = currentProfile.treats >= (accessory?.treatCost || 0);
+
+      if (!accessory || !meetsLevel || !canAfford) {
+        return currentProfile;
+      }
 
       return {
         ...currentProfile,
-        equippedAccessories: isAlreadyEquipped
-          ? currentAccessories.filter((id) => id !== accessoryId)
-          : [...currentAccessories, accessoryId],
+        treats: currentProfile.treats - accessory.treatCost,
+        unlockedAccessoryIds: [...unlockedAccessoryIds, accessoryId],
+        equippedAccessories: [...currentAccessories, accessoryId],
       };
     });
   }
@@ -786,7 +836,7 @@ function App() {
             catProfile={catProfile}
             accessories={ACCESSORIES}
             completedTaskCount={completedTaskCount}
-            handleEquipAccessory={handleEquipAccessory}
+            handlePurchaseAccessory={handlePurchaseAccessory}
           />
         }
       />
