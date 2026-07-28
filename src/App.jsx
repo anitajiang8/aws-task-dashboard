@@ -135,6 +135,22 @@ function getTaskRewardXp(priority) {
   return PRIORITY_REWARDS[priority] || PRIORITY_REWARDS.medium;
 }
 
+function compareByDueDate(taskA, taskB) {
+  if (!taskA.dueDate && !taskB.dueDate) {
+    return 0;
+  }
+
+  if (!taskA.dueDate) {
+    return 1;
+  }
+
+  if (!taskB.dueDate) {
+    return -1;
+  }
+
+  return new Date(taskA.dueDate) - new Date(taskB.dueDate);
+}
+
 function normaliseTask(task) {
   const priority = task.priority || "medium";
   const status = task.status === "done" ? "done" : "todo";
@@ -233,7 +249,11 @@ function MiniTopNav() {
   return (
     <nav className="mini-top-nav" aria-label="Main navigation">
       <NavLink end to="/" className={getMiniNavClass}>
-        Dashboard
+        Home
+      </NavLink>
+
+      <NavLink to="/tasks" className={getMiniNavClass}>
+        Tasks
       </NavLink>
 
       <NavLink to="/archive" className={getMiniNavClass}>
@@ -247,38 +267,15 @@ function MiniTopNav() {
   );
 }
 
-function DashboardPage({
+function HomePage({
   catProfile,
   accessories,
   totalTasks,
   activeTaskCount,
   completedTaskCount,
   highPriorityTasks,
-  newTaskTitle,
-  setNewTaskTitle,
-  newTaskPriority,
-  setNewTaskPriority,
-  newTaskDueDate,
-  setNewTaskDueDate,
-  newTaskCategory,
-  setNewTaskCategory,
-  handleAddTask,
-  activeFilter,
-  setActiveFilter,
-  searchQuery,
-  setSearchQuery,
-  sortOption,
-  setSortOption,
-  displayedTasks,
-  handleCompleteTask,
-  handleDeleteTask,
-  handleUpdateTask,
+  nextUpTasks,
 }) {
-  const activeEmptyMessage =
-    activeTaskCount === 0
-      ? "No active tasks here. Add a new quest above!"
-      : "No active tasks match your current filter or search. Try All Active.";
-
   return (
     <main className="app">
       <MiniTopNav />
@@ -336,6 +333,85 @@ function DashboardPage({
             helper="Needs extra focus"
           />
         </div>
+
+        <div className="paw-divider">
+          <span className="paw-divider-mark"></span>
+        </div>
+
+        <section className="task-list">
+          <div className="task-list-header">
+            <div>
+              <p className="card-kicker">Coming up</p>
+              <h2>Next up</h2>
+            </div>
+
+            <NavLink to="/tasks" className="text-page-link">
+              See all tasks
+            </NavLink>
+          </div>
+
+          {nextUpTasks.length === 0 ? (
+            <p className="empty-message">
+              No active tasks yet — add one from the Tasks page.
+            </p>
+          ) : (
+            <div className="next-up-list">
+              {nextUpTasks.map((task) => (
+                <div key={task.id} className="next-up-item">
+                  <span>{task.title}</span>
+                  <span className={`priority-badge ${task.priority || "medium"}`}>
+                    {task.priority || "medium"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </section>
+    </main>
+  );
+}
+
+function TasksPage({
+  newTaskTitle,
+  setNewTaskTitle,
+  newTaskPriority,
+  setNewTaskPriority,
+  newTaskDueDate,
+  setNewTaskDueDate,
+  newTaskCategory,
+  setNewTaskCategory,
+  handleAddTask,
+  activeFilter,
+  setActiveFilter,
+  searchQuery,
+  setSearchQuery,
+  sortOption,
+  setSortOption,
+  displayedTasks,
+  activeTaskCount,
+  handleCompleteTask,
+  handleDeleteTask,
+  handleUpdateTask,
+}) {
+  const activeEmptyMessage =
+    activeTaskCount === 0
+      ? "No active tasks here. Add a new quest above!"
+      : "No active tasks match your current filter or search. Try All Active.";
+
+  return (
+    <main className="app">
+      <MiniTopNav />
+
+      <section className="dashboard">
+        <header className="header">
+          <p className="eyebrow">Focus mode</p>
+          <h1>Tasks</h1>
+          <p className="subtitle">
+            Add, edit, and work through your quests here — the home page
+            just shows a quick preview.
+          </p>
+        </header>
 
         <TaskForm
           newTaskTitle={newTaskTitle}
@@ -478,7 +554,7 @@ function ArchivePage({
           <div>
             <h2>Completed quests stay out of your way.</h2>
             <p>
-              Your dashboard only shows active tasks now. This archive keeps
+              The Tasks page only shows active tasks now. This archive keeps
               your finished work organised without making the main page feel
               crowded.
             </p>
@@ -523,7 +599,7 @@ function MochiPage({
 
         <div className="mochi-back-row">
           <NavLink to="/" className="cute-page-link">
-            Back to dashboard
+            Back to home
           </NavLink>
         </div>
       </section>
@@ -759,19 +835,7 @@ function App() {
     }
 
     if (sortOption === "due-date") {
-      if (!taskA.dueDate && !taskB.dueDate) {
-        return 0;
-      }
-
-      if (!taskA.dueDate) {
-        return 1;
-      }
-
-      if (!taskB.dueDate) {
-        return -1;
-      }
-
-      return new Date(taskA.dueDate) - new Date(taskB.dueDate);
+      return compareByDueDate(taskA, taskB);
     }
 
     return 0;
@@ -781,39 +845,51 @@ function App() {
     return new Date(taskB.completedAt) - new Date(taskA.completedAt);
   });
 
-  const dashboardElement = (
-    <DashboardPage
+  const nextUpTasks = [...activeTasks].sort(compareByDueDate).slice(0, 3);
+
+  const homeElement = (
+    <HomePage
       catProfile={catProfile}
       accessories={ACCESSORIES}
       totalTasks={totalTasks}
       activeTaskCount={activeTaskCount}
       completedTaskCount={completedTaskCount}
       highPriorityTasks={highPriorityTasks}
-      newTaskTitle={newTaskTitle}
-      setNewTaskTitle={setNewTaskTitle}
-      newTaskPriority={newTaskPriority}
-      setNewTaskPriority={setNewTaskPriority}
-      newTaskDueDate={newTaskDueDate}
-      setNewTaskDueDate={setNewTaskDueDate}
-      newTaskCategory={newTaskCategory}
-      setNewTaskCategory={setNewTaskCategory}
-      handleAddTask={handleAddTask}
-      activeFilter={activeFilter}
-      setActiveFilter={setActiveFilter}
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-      sortOption={sortOption}
-      setSortOption={setSortOption}
-      displayedTasks={displayedTasks}
-      handleCompleteTask={handleCompleteTask}
-      handleDeleteTask={handleDeleteTask}
-      handleUpdateTask={handleUpdateTask}
+      nextUpTasks={nextUpTasks}
     />
   );
 
   return (
     <Routes>
-      <Route path="/" element={dashboardElement} />
+      <Route path="/" element={homeElement} />
+
+      <Route
+        path="/tasks"
+        element={
+          <TasksPage
+            newTaskTitle={newTaskTitle}
+            setNewTaskTitle={setNewTaskTitle}
+            newTaskPriority={newTaskPriority}
+            setNewTaskPriority={setNewTaskPriority}
+            newTaskDueDate={newTaskDueDate}
+            setNewTaskDueDate={setNewTaskDueDate}
+            newTaskCategory={newTaskCategory}
+            setNewTaskCategory={setNewTaskCategory}
+            handleAddTask={handleAddTask}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+            displayedTasks={displayedTasks}
+            activeTaskCount={activeTaskCount}
+            handleCompleteTask={handleCompleteTask}
+            handleDeleteTask={handleDeleteTask}
+            handleUpdateTask={handleUpdateTask}
+          />
+        }
+      />
 
       <Route
         path="/archive"
@@ -841,7 +917,7 @@ function App() {
         }
       />
 
-      <Route path="*" element={dashboardElement} />
+      <Route path="*" element={homeElement} />
     </Routes>
   );
 }
