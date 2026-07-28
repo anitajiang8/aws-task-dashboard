@@ -1517,6 +1517,10 @@ h3 {
 
 /* Calendar view */
 
+.calendar-page-card {
+  border-radius: 10px;
+}
+
 .calendar-toolbar {
   display: flex;
   justify-content: space-between;
@@ -1524,6 +1528,10 @@ h3 {
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
+}
+
+.calendar-toolbar .filter-bar button {
+  border-radius: 8px;
 }
 
 .calendar-nav {
@@ -1542,7 +1550,7 @@ h3 {
 .calendar-nav-button {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 8px;
   border: 1px solid #eaddec;
   background: #ffffff;
   color: #7a3557;
@@ -1575,14 +1583,27 @@ h3 {
 }
 
 .calendar-day {
+  width: 100%;
   min-height: 88px;
-  border-radius: 14px;
+  border-radius: 8px;
   border: 1px solid #f0e4ef;
   background: #ffffff;
   padding: 8px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
+  text-align: left;
+  cursor: pointer;
+  font-family: "Nunito", Arial, Helvetica, sans-serif;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.calendar-day:hover {
+  border-color: #d58db8;
+  background: #fff0f6;
 }
 
 .calendar-grid-week .calendar-day {
