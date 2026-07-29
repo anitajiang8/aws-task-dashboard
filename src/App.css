@@ -163,10 +163,16 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 20px;
 }
 
 .sidebar-title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: "Quicksand", Arial, Helvetica, sans-serif;
   font-weight: 700;
   font-size: 20px;
@@ -174,6 +180,7 @@ h3 {
 }
 
 .sidebar-close {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   width: 32px;
