@@ -11,8 +11,6 @@ function formatDate(dateString) {
     return "Not available";
   }
 
-  // Date-only strings (e.g. dueDate) parse as UTC midnight, which can
-  // display as the previous day in timezones behind UTC — force local time.
   const hasTimeComponent = dateString.includes("T");
   const date = hasTimeComponent
     ? new Date(dateString)

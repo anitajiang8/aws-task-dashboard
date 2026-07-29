@@ -283,7 +283,7 @@ function HomePage({
           </NavLink>
 
           <section className="focus-card">
-            <p className="card-kicker">Today&apos;s cosy quest</p>
+            <p className="card-kicker">Today&apos;s quest</p>
             <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
             <p>
               Complete active tasks to collect XP. Click Mochi to visit her
@@ -337,7 +337,7 @@ function HomePage({
 
           {nextUpTasks.length === 0 ? (
             <p className="empty-message">
-              No active tasks yet — add one from the Tasks page.
+              No active tasks yet, add one from the Tasks page!
             </p>
           ) : (
             <div className="next-up-list">
@@ -516,8 +516,7 @@ function ArchivePage({
             <p className="card-kicker">Mochi&apos;s scrapbook</p>
             <h1>Archived Tasks</h1>
             <p>
-              Every completed quest lives here, like a soft little record of
-              your progress. Restore a task when you need it back, or delete it
+              Every completed quest lives here. Restore a task when you need it back, or delete it
               when you are ready to clear the shelf.
             </p>
           </div>
@@ -555,7 +554,7 @@ function ArchivePage({
           <div>
             <h2>Completed quests stay out of your way.</h2>
             <p>
-              The Tasks page only shows active tasks now. This archive keeps
+              The Tasks page only shows active tasks. This archive keeps
               your finished work organised without making the main page feel
               crowded.
             </p>
@@ -564,7 +563,7 @@ function ArchivePage({
 
         <TaskList
           title="Completed History"
-          subtitle="A cosy archive of everything you have already finished."
+          subtitle="An archive of everything you have already finished."
           tasks={completedHistory}
           emptyMessage="No completed tasks yet. Mochi is waiting for treats."
           variant="completed"
