@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
 
 function getSidebarLinkClass({ isActive }) {
@@ -11,6 +11,21 @@ function Sidebar() {
   function closeSidebar() {
     setIsOpen(false);
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   function handleNavClick() {
     // On mobile the sidebar is a full overlay, so navigating should close

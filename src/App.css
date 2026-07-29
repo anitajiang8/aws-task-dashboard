@@ -140,10 +140,16 @@ h3 {
 }
 
 .sidebar-inner {
-  width: 240px;
+  width: 100%;
 }
 
 @media (min-width: 901px) {
+  .sidebar-inner {
+    /* Fixed width (rather than 100%) so nav links don't reflow/wrap
+       while the sidebar's own width animates from 240px to 0. */
+    width: 240px;
+  }
+
   .sidebar:not(.sidebar-open) {
     width: 0;
     padding-left: 0;
@@ -1875,7 +1881,7 @@ h3 {
     position: fixed;
     top: 0;
     left: 0;
-    width: 240px;
+    width: min(240px, 82vw);
     padding: 24px 16px;
     border-right: 1px solid #f0e4ef;
     transform: translateX(-100%);
