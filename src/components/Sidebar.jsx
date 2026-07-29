@@ -6,10 +6,18 @@ function getSidebarLinkClass({ isActive }) {
 }
 
 function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   function closeSidebar() {
     setIsOpen(false);
+  }
+
+  function handleNavClick() {
+    // On mobile the sidebar is a full overlay, so navigating should close
+    // it. On desktop it just sits beside the content, so leave it open.
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      setIsOpen(false);
+    }
   }
 
   return (
@@ -39,43 +47,49 @@ function Sidebar() {
         className={`sidebar ${isOpen ? "sidebar-open" : ""}`}
         aria-label="Main navigation"
       >
-        <div className="sidebar-header">
-          <span className="sidebar-title">Purrductivity</span>
+        <div className="sidebar-inner">
+          <div className="sidebar-header">
+            <span className="sidebar-title">Purrductivity</span>
 
-          <button
-            type="button"
-            className="sidebar-close"
-            onClick={closeSidebar}
-            aria-label="Close menu"
-          >
-            ✕
-          </button>
-        </div>
+            <button
+              type="button"
+              className="sidebar-close"
+              onClick={closeSidebar}
+              aria-label="Collapse menu"
+            >
+              &times;
+            </button>
+          </div>
 
-        <div className="sidebar-links">
-          <NavLink end to="/" className={getSidebarLinkClass} onClick={closeSidebar}>
-            Home
-          </NavLink>
+          <div className="sidebar-links">
+            <NavLink end to="/" className={getSidebarLinkClass} onClick={handleNavClick}>
+              Home
+            </NavLink>
 
-          <NavLink to="/tasks" className={getSidebarLinkClass} onClick={closeSidebar}>
-            Tasks
-          </NavLink>
+            <NavLink to="/tasks" className={getSidebarLinkClass} onClick={handleNavClick}>
+              Tasks
+            </NavLink>
 
-          <NavLink
-            to="/calendar"
-            className={getSidebarLinkClass}
-            onClick={closeSidebar}
-          >
-            Calendar
-          </NavLink>
+            <NavLink
+              to="/calendar"
+              className={getSidebarLinkClass}
+              onClick={handleNavClick}
+            >
+              Calendar
+            </NavLink>
 
-          <NavLink to="/archive" className={getSidebarLinkClass} onClick={closeSidebar}>
-            Archive
-          </NavLink>
+            <NavLink
+              to="/archive"
+              className={getSidebarLinkClass}
+              onClick={handleNavClick}
+            >
+              Archive
+            </NavLink>
 
-          <NavLink to="/mochi" className={getSidebarLinkClass} onClick={closeSidebar}>
-            Mochi
-          </NavLink>
+            <NavLink to="/mochi" className={getSidebarLinkClass} onClick={handleNavClick}>
+              Mochi
+            </NavLink>
+          </div>
         </div>
       </nav>
     </>
