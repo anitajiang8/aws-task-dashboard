@@ -146,8 +146,13 @@ h3 {
 @media (min-width: 901px) {
   .sidebar-inner {
     /* Fixed width (rather than 100%) so nav links don't reflow/wrap
-       while the sidebar's own width animates from 240px to 0. */
-    width: 240px;
+       while the sidebar's own width animates from 240px to 0. This is
+       240px minus .sidebar's own 16px+16px horizontal padding, NOT
+       240px itself - .sidebar-inner sits inside that padded area, so
+       matching .sidebar's outer width here overflows it by exactly
+       the padding amount and gets clipped by .sidebar's overflow:
+       hidden (which is what was cropping the close button). */
+    width: 208px;
   }
 
   .sidebar:not(.sidebar-open) {
