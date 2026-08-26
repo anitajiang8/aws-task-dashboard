@@ -2283,66 +2283,64 @@ h3 {
 
 /* Emoji-free decorative marks */
 
-.stat-icon-mark {
-  position: relative;
-  display: block;
+/* Scoped to .stat-icon so it outweighs `.stat-card span { display: block }`,
+   which is why the original had to fall back to absolute positioning. */
+.stat-icon .stat-icon-mark {
+  /* Grid centring rather than hand-tuned left/top offsets: place-content
+     centres the whole track group, so a mark stays centred whether it is
+     drawn from one pseudo-element or two. */
+  display: grid;
+  place-content: center;
+  justify-items: center;
   width: 24px;
   height: 24px;
+  /* `.stat-card span` also sets margin-bottom: 4px, which pushed every
+     mark 2px above the tile centre. */
+  margin: 0;
 }
 
+/* Three stacked bars. The shadows sit at a symmetric offset so the
+   17px group centres on the middle bar. */
 .stat-icon-mark.stat-icon-total::before {
   content: "";
-  position: absolute;
-  left: 2px;
-  top: 4px;
   width: 20px;
   height: 3px;
   border-radius: 999px;
   background: currentColor;
   box-shadow:
-    0 7px 0 currentColor,
-    0 14px 0 currentColor;
+    0 -7px 0 currentColor,
+    0 7px 0 currentColor;
 }
 
 .stat-icon-mark.stat-icon-active::before {
   content: "";
-  position: absolute;
-  left: 3px;
-  top: 3px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   border: 3px solid currentColor;
 }
 
-.stat-icon-mark.stat-icon-done::before,
-.stat-icon-mark.stat-icon-done::after {
-  content: "";
-  position: absolute;
-  height: 3px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
+/* One box, two borders — the vertex is a real corner join, so the two
+   arms cannot drift apart the way separately-rotated bars did.
+   Rotating -45deg leaves the visual centre ~0.8px below the box centre,
+   which the translate corrects. */
 .stat-icon-mark.stat-icon-done::before {
-  left: 3px;
-  top: 13px;
-  width: 8px;
-  transform: rotate(45deg);
+  content: "";
+  width: 14px;
+  height: 8px;
+  border-left: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  border-bottom-left-radius: 2px;
+  transform: translateY(-0.8px) rotate(-45deg);
 }
 
-.stat-icon-mark.stat-icon-done::after {
-  left: 8px;
-  top: 10px;
-  width: 14px;
-  transform: rotate(-45deg);
+/* Two grid rows, so the bar and its dot centre as one group. */
+.stat-icon-mark.stat-icon-high {
+  gap: 3px;
 }
 
 .stat-icon-mark.stat-icon-high::before {
   content: "";
-  position: absolute;
-  left: 10px;
-  top: 3px;
   width: 4px;
   height: 12px;
   border-radius: 999px;
@@ -2351,9 +2349,6 @@ h3 {
 
 .stat-icon-mark.stat-icon-high::after {
   content: "";
-  position: absolute;
-  left: 10px;
-  top: 18px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
