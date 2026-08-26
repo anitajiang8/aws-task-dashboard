@@ -21,7 +21,7 @@ function HomePage() {
       <PageHeader
         eyebrow="Dashboard"
         title="Purrductivity"
-        subtitle="A task list that pays you. Finish a quest to earn XP and treats, then spend them spoiling Mochi. New here? Open “How it works” in the sidebar."
+        subtitle="A task list that pays you. Every quest you finish earns XP and treats — XP levels Mochi up, treats buy what she wears. New here? Open “How it works” in the sidebar."
       />
 
       <div className="hero-grid">
@@ -39,76 +39,65 @@ function HomePage() {
         </NavLink>
 
         <section className="focus-card">
-          <p className="card-kicker">Today&apos;s quest</p>
+          <p className="card-kicker">At a glance</p>
           <h2>Finish a task, feed the cat.</h2>
-          <p>
-            Every completed quest pays XP and treats. XP levels Mochi up;
-            treats buy what she wears. Tap her to open the closet.
-          </p>
+
+          <div className="overview-stats">
+            <StatsCard
+              iconClass="stat-icon-total"
+              label="Total"
+              value={totalTasks}
+              to="/tasks"
+            />
+            <StatsCard
+              iconClass="stat-icon-active"
+              label="Open"
+              value={activeTaskCount}
+              to="/tasks"
+            />
+            <StatsCard
+              iconClass="stat-icon-done"
+              label="Done"
+              value={completedTaskCount}
+              to="/archive"
+            />
+            <StatsCard
+              iconClass="stat-icon-high"
+              label="High"
+              value={highPriorityCount}
+              to="/tasks?priority=high"
+            />
+          </div>
+
+          <div className="overview-next">
+            <div className="overview-next-header">
+              <h3>Next up</h3>
+              <NavLink to="/tasks" className="text-page-link">
+                See all
+              </NavLink>
+            </div>
+
+            {nextUpTasks.length === 0 ? (
+              <p className="empty-message">
+                No open quests. Add one and it will show up here.
+              </p>
+            ) : (
+              <div className="next-up-list">
+                {nextUpTasks.map((task) => (
+                  <div key={task.id} className="next-up-item">
+                    <span>{task.title}</span>
+                    <span
+                      className={`priority-badge ${task.priority || "medium"}`}
+                    >
+                      {task.priority || "medium"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       </div>
-
-      <div className="stats-grid">
-        <StatsCard
-          iconClass="stat-icon-total"
-          label="Total Quests"
-          value={totalTasks}
-          helper="Created all time"
-        />
-        <StatsCard
-          iconClass="stat-icon-active"
-          label="Active"
-          value={activeTaskCount}
-          helper="Open right now"
-        />
-        <StatsCard
-          iconClass="stat-icon-done"
-          label="Completed"
-          value={completedTaskCount}
-          helper="Sitting in the archive"
-        />
-        <StatsCard
-          iconClass="stat-icon-high"
-          label="High Priority"
-          value={highPriorityCount}
-          helper="Worth +15 XP each"
-        />
-      </div>
-
-      <div className="paw-divider">
-        <span className="paw-divider-mark"></span>
-      </div>
-
-      <section className="task-list">
-        <div className="task-list-header">
-          <div>
-            <p className="card-kicker">Coming up</p>
-            <h2>Next up</h2>
-          </div>
-
-          <NavLink to="/tasks" className="text-page-link">
-            See all tasks
-          </NavLink>
-        </div>
-
-        {nextUpTasks.length === 0 ? (
-          <p className="empty-message">
-            Nothing scheduled. Add a quest on the Tasks page and it will show
-            up here once it has a due date.
-          </p>
-        ) : (
-          <div className="next-up-list">
-            {nextUpTasks.map((task) => (
-              <div key={task.id} className="next-up-item">
-                <span>{task.title}</span>
-                <span className={`priority-badge ${task.priority || "medium"}`}>
-                  {task.priority || "medium"}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
     </section>
   );
 }

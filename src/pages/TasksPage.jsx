@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router";
 
 import PageHeader from "../components/PageHeader";
 import TaskForm from "../components/TaskForm";
@@ -34,7 +35,22 @@ function TasksPage() {
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [newTaskCategory, setNewTaskCategory] = useState("");
 
-  const [activeFilter, setActiveFilter] = useState("all");
+  // The priority filter lives in the URL so the home page can deep-link
+  // straight to /tasks?priority=high, and so a filtered view is shareable.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeFilter = searchParams.get("priority") || "all";
+
+  function setActiveFilter(priority) {
+    const next = new URLSearchParams(searchParams);
+    if (priority === "all") {
+      next.delete("priority");
+    } else {
+      next.set("priority", priority);
+    }
+    // replace, so clicking through pills does not stack history entries.
+    setSearchParams(next, { replace: true });
+  }
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("newest");
 

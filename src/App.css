@@ -2541,7 +2541,9 @@ textarea:focus-visible,
 [tabindex]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  /* No border-radius here: the outline already follows each element's own
+     corners, and setting one reshaped every focused element (the cat card
+     snapped from 32px corners to 14px the moment it took focus). */
 }
 
 /* Mochi idles with five infinite animations. Honour a reduced-motion
@@ -3284,4 +3286,87 @@ textarea:focus-visible,
   .heatmap-footer {
     grid-column: 1;
   }
+}
+
+/* ---------------------------------------------------------------
+   Home overview panel
+   The purple hero card holds the four stat tiles and the Next up
+   list. Compact sizing is scoped to .overview-stats rather than a
+   variant prop, matching how .dashboard-mochi-link .cat-card works.
+   --------------------------------------------------------------- */
+
+.overview-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* Labels here are single words ("Total", "Open", "Done", "High"), which
+   fit beside the icon down to a 130px tile without wrapping — so the row
+   layout holds at every width and needs no breakpoint of its own. */
+.overview-stats .stat-card {
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+}
+
+.overview-stats .stat-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+
+.overview-stats .stat-card > div {
+  min-width: 0;
+}
+
+.overview-stats .stat-card span {
+  margin-bottom: 0;
+  font-size: var(--text-meta);
+}
+
+.overview-stats .stat-card strong {
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+/* Whole-tile link. Colour and underline are reset so it reads as a card. */
+.stat-card-link {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.stat-card-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-soft);
+  box-shadow: var(--shadow-2);
+}
+
+.overview-next {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.overview-next-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.overview-next-header h3 {
+  margin: 0;
+  font-size: var(--text-body);
+}
+
+.overview-next .empty-message {
+  margin: 0;
 }
