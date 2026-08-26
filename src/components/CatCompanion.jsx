@@ -1,8 +1,5 @@
-const XP_PER_LEVEL = 50;
-
-export function getCatLevel(totalXp) {
-  return Math.floor(totalXp / XP_PER_LEVEL) + 1;
-}
+import { XP_PER_LEVEL } from "../lib/constants";
+import { getCatLevel } from "../lib/tasks";
 
 function getXpProgress(totalXp) {
   return totalXp % XP_PER_LEVEL;

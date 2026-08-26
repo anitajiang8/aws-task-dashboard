@@ -1,53 +1,17 @@
 import { useState } from "react";
+
+import {
+  WEEKDAY_LABELS as FULL_WEEKDAY_LABELS,
+  addDays,
+  addMonths,
+  getMonthGridDays,
+  getWeekDays,
+  toIsoDate,
+} from "../lib/dates";
 import TaskItem from "./TaskItem";
 
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_GRID_LENGTH = 42;
+const WEEKDAY_LABELS = FULL_WEEKDAY_LABELS;
 const MAX_CHIPS_PER_MONTH_CELL = 3;
-
-function toIsoDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function startOfWeek(date) {
-  const result = new Date(date);
-  result.setHours(0, 0, 0, 0);
-  result.setDate(result.getDate() - result.getDay());
-  return result;
-}
-
-function addDays(date, amount) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + amount);
-  return result;
-}
-
-function addMonths(date, amount) {
-  const result = new Date(date);
-  result.setMonth(result.getMonth() + amount);
-  return result;
-}
-
-function getMonthGridDays(referenceDate) {
-  const firstOfMonth = new Date(
-    referenceDate.getFullYear(),
-    referenceDate.getMonth(),
-    1
-  );
-  const gridStart = startOfWeek(firstOfMonth);
-
-  return Array.from({ length: MONTH_GRID_LENGTH }, (_, index) =>
-    addDays(gridStart, index)
-  );
-}
-
-function getWeekDays(referenceDate) {
-  const weekStart = startOfWeek(referenceDate);
-  return Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
-}
 
 function getRangeLabel(viewMode, referenceDate) {
   if (viewMode === "day") {

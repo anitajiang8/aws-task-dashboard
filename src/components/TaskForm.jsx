@@ -29,9 +29,9 @@ function TaskForm({
           value={newTaskPriority}
           onChange={(event) => setNewTaskPriority(event.target.value)}
         >
-          <option value="low">Low Priority · +5 XP</option>
-          <option value="medium">Medium Priority · +10 XP</option>
-          <option value="high">High Priority · +15 XP</option>
+          <option value="low">Low Priority · +5 XP · +1 Treat</option>
+          <option value="medium">Medium Priority · +10 XP · +2 Treats</option>
+          <option value="high">High Priority · +15 XP · +3 Treats</option>
         </select>
 
         <input
