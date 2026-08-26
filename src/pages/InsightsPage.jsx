@@ -59,7 +59,9 @@ function InsightsPage() {
           value={stats.streak.current}
           helper={
             stats.streak.longest > 0
-              ? `Best run: ${stats.streak.longest} days`
+              ? `Best run: ${stats.streak.longest} ${
+                  stats.streak.longest === 1 ? "day" : "days"
+                }`
               : "Finish one to start a run"
           }
         />

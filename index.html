@@ -4,7 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffeef4" />
+
     <title>Purrductivity</title>
+    <meta
+      name="description"
+      content="A task dashboard that pays you for finishing things. Complete quests to earn XP and treats, and spend them spoiling Mochi the cat."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Purrductivity" />
+    <meta
+      property="og:description"
+      content="A task dashboard that pays you for finishing things. Complete quests to earn XP and treats, and spend them spoiling Mochi the cat."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts were being pulled by an @import inside App.css, which blocks
+         rendering until the stylesheet is parsed. Preconnecting and linking
+         here lets the browser start fetching them immediately. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="root"></div>
