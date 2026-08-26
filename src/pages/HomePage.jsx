@@ -19,8 +19,9 @@ function HomePage() {
   return (
     <section className="dashboard">
       <PageHeader
+        eyebrow="Dashboard"
         title="Purrductivity"
-        subtitle="Feed Mochi by getting things done. Finish a quest, earn XP and treats, and spend them dressing up the world's most spoiled cat."
+        subtitle="A task list that pays you. Finish a quest to earn XP and treats, then spend them spoiling Mochi. New here? Open “How it works” in the sidebar."
       />
 
       <div className="hero-grid">
@@ -39,10 +40,10 @@ function HomePage() {
 
         <section className="focus-card">
           <p className="card-kicker">Today&apos;s quest</p>
-          <h2>Finish tasks, earn treats, and help Mochi grow.</h2>
+          <h2>Finish a task, feed the cat.</h2>
           <p>
-            Complete active tasks to collect XP. Click Mochi to visit her
-            closet, view rewards, and customize her accessories.
+            Every completed quest pays XP and treats. XP levels Mochi up;
+            treats buy what she wears. Tap her to open the closet.
           </p>
         </section>
       </div>
@@ -52,25 +53,25 @@ function HomePage() {
           iconClass="stat-icon-total"
           label="Total Quests"
           value={totalTasks}
-          helper="All tasks created"
+          helper="Created all time"
         />
         <StatsCard
           iconClass="stat-icon-active"
           label="Active"
           value={activeTaskCount}
-          helper="Still waiting for you"
+          helper="Open right now"
         />
         <StatsCard
           iconClass="stat-icon-done"
           label="Completed"
           value={completedTaskCount}
-          helper="Saved in archive"
+          helper="Sitting in the archive"
         />
         <StatsCard
           iconClass="stat-icon-high"
           label="High Priority"
           value={highPriorityCount}
-          helper="Needs extra focus"
+          helper="Worth +15 XP each"
         />
       </div>
 
@@ -92,7 +93,8 @@ function HomePage() {
 
         {nextUpTasks.length === 0 ? (
           <p className="empty-message">
-            No active tasks yet, add one from the Tasks page!
+            Nothing scheduled. Add a quest on the Tasks page and it will show
+            up here once it has a due date.
           </p>
         ) : (
           <div className="next-up-list">

@@ -8,9 +8,9 @@ function CalendarPage() {
   return (
     <section className="dashboard">
       <PageHeader
-        eyebrow="Plan ahead"
-        title="Calendar"
-        subtitle="Your active tasks laid out by due date, week by week or month by month."
+        eyebrow="Schedule"
+        title="What&apos;s due when"
+        subtitle="Only open quests appear here, placed on their due date. Anything without a due date is listed underneath the grid."
       />
 
       <section className="task-list calendar-page-card">

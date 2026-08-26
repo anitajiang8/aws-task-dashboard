@@ -1,10 +1,7 @@
 import { useState } from "react";
 
-const PRIORITY_REWARDS = {
-  low: 5,
-  medium: 10,
-  high: 15,
-};
+import { PRIORITY_REWARDS } from "../lib/constants";
+import { todayIsoDate } from "../lib/dates";
 
 function formatDate(dateString) {
   if (!dateString) {
@@ -23,10 +20,6 @@ function formatDate(dateString) {
   });
 }
 
-function todayIsoDate() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function TaskItem({
   task,
   variant,
@@ -36,6 +29,7 @@ function TaskItem({
   onUpdateTask,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [draftTitle, setDraftTitle] = useState(task.title);
   const [draftPriority, setDraftPriority] = useState(task.priority || "medium");
   const [draftDueDate, setDraftDueDate] = useState(task.dueDate || "");
@@ -174,13 +168,38 @@ function TaskItem({
           </button>
         )}
 
-        <button className="ghost-button" onClick={startEditing}>
-          Edit
-        </button>
+        {isConfirmingDelete ? (
+          <span className="delete-confirm" role="group" aria-label="Confirm delete">
+            <span className="delete-confirm-label">Delete?</span>
 
-        <button className="ghost-button" onClick={() => onDeleteTask(task.id)}>
-          Delete
-        </button>
+            <button
+              className="danger-button"
+              onClick={() => onDeleteTask(task.id)}
+            >
+              Yes
+            </button>
+
+            <button
+              className="ghost-button"
+              onClick={() => setIsConfirmingDelete(false)}
+            >
+              Keep
+            </button>
+          </span>
+        ) : (
+          <>
+            <button className="ghost-button" onClick={startEditing}>
+              Edit
+            </button>
+
+            <button
+              className="ghost-button"
+              onClick={() => setIsConfirmingDelete(true)}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </article>
   );

@@ -65,15 +65,15 @@ function TasksPage() {
 
   const activeEmptyMessage =
     activeTaskCount === 0
-      ? "No active tasks here. Add a new quest above!"
-      : "No active tasks match your current filter or search. Try All Active.";
+      ? "No open quests. Add one above and Mochi will start earning."
+      : "Nothing matches this filter or search. Try “All Active” to see everything.";
 
   return (
     <section className="dashboard">
       <PageHeader
-        eyebrow="Focus mode"
-        title="Tasks"
-        subtitle="Add, edit, and work through your quests here — the home page just shows a quick preview."
+        eyebrow="Quests"
+        title="Your quest log"
+        subtitle="Everything still open, in one place. Priority sets the payout — high-priority quests are worth the most XP and treats."
       />
 
       <TaskForm
@@ -128,7 +128,7 @@ function TasksPage() {
 
       <TaskList
         title="Active Tasks"
-        subtitle="Complete tasks to earn XP and send them to your cosy archive."
+        subtitle="Finish one to collect its reward and move it to the archive."
         tasks={displayedTasks}
         emptyMessage={activeEmptyMessage}
         variant="active"

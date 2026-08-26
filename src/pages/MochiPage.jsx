@@ -1,6 +1,7 @@
 import { NavLink } from "react-router";
 
 import CatCompanion from "../components/CatCompanion";
+import PageHeader from "../components/PageHeader";
 import { useTaskStore } from "../store/taskStoreContext";
 
 function MochiPage() {
@@ -9,6 +10,12 @@ function MochiPage() {
 
   return (
     <section className="dashboard mochi-page mochi-only-page">
+      <PageHeader
+        eyebrow="Companion"
+        title="Mochi&apos;s room"
+        subtitle="Spend treats on accessories. Items appear once Mochi reaches the right level, and stay unlocked once bought."
+      />
+
       <div className="mochi-only-layout">
         <CatCompanion
           catProfile={catProfile}

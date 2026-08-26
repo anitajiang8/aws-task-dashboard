@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchState, saveState } from "../api";
 import {
-  ACCESSORIES,
   DEFAULT_CAT_PROFILE,
   DEFAULT_TASKS,
   getTreatReward,
 } from "../lib/constants";
+import { ACCESSORIES } from "../lib/accessories";
 import {
   completedHistory,
   getCatLevel,

@@ -1,5 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router";
+
+import HelpPanel from "./HelpPanel";
+
+const NAV_ITEMS = [
+  { to: "/", label: "Home", end: true },
+  { to: "/tasks", label: "Tasks" },
+  { to: "/calendar", label: "Calendar" },
+  { to: "/insights", label: "Insights" },
+  { to: "/archive", label: "Archive" },
+  { to: "/mochi", label: "Mochi" },
+];
 
 function getSidebarLinkClass({ isActive }) {
   return isActive ? "sidebar-link active-sidebar-link" : "sidebar-link";
@@ -7,14 +18,24 @@ function getSidebarLinkClass({ isActive }) {
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const helpButtonRef = useRef(null);
 
   function closeSidebar() {
     setIsOpen(false);
   }
 
+  function closeHelp() {
+    setIsHelpOpen(false);
+    // Send focus back to the control that opened the dialog.
+    helpButtonRef.current?.focus();
+  }
+
   useEffect(() => {
-    if (!isOpen) {
-      return;
+    // While the help dialog is open it owns Escape, so the sidebar
+    // should not also collapse on the same keypress.
+    if (!isOpen || isHelpOpen) {
+      return undefined;
     }
 
     function handleKeyDown(event) {
@@ -25,7 +46,7 @@ function Sidebar() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, isHelpOpen]);
 
   function handleNavClick() {
     // On mobile the sidebar is a full overlay, so navigating should close
@@ -77,36 +98,36 @@ function Sidebar() {
           </div>
 
           <div className="sidebar-links">
-            <NavLink end to="/" className={getSidebarLinkClass} onClick={handleNavClick}>
-              Home
-            </NavLink>
+            {NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={getSidebarLinkClass}
+                onClick={handleNavClick}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
 
-            <NavLink to="/tasks" className={getSidebarLinkClass} onClick={handleNavClick}>
-              Tasks
-            </NavLink>
-
-            <NavLink
-              to="/calendar"
-              className={getSidebarLinkClass}
-              onClick={handleNavClick}
+          <div className="sidebar-footer">
+            <button
+              type="button"
+              className="sidebar-help-button"
+              onClick={() => setIsHelpOpen(true)}
+              ref={helpButtonRef}
             >
-              Calendar
-            </NavLink>
-
-            <NavLink
-              to="/archive"
-              className={getSidebarLinkClass}
-              onClick={handleNavClick}
-            >
-              Archive
-            </NavLink>
-
-            <NavLink to="/mochi" className={getSidebarLinkClass} onClick={handleNavClick}>
-              Mochi
-            </NavLink>
+              <span className="sidebar-help-mark" aria-hidden="true">
+                ?
+              </span>
+              How it works
+            </button>
           </div>
         </div>
       </nav>
+
+      {isHelpOpen && <HelpPanel onClose={closeHelp} />}
     </>
   );
 }

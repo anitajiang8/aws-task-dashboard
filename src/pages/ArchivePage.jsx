@@ -15,11 +15,11 @@ function ArchivePage() {
     <section className="dashboard archive-page">
       <section className="archive-hero">
         <div className="archive-hero-copy">
-          <p className="card-kicker">Mochi&apos;s scrapbook</p>
-          <h1>Archived Tasks</h1>
+          <p className="card-kicker">Completed</p>
+          <h1>The trophy shelf</h1>
           <p>
-            Every completed quest lives here. Restore a task when you need it
-            back, or delete it when you are ready to clear the shelf.
+            Every quest you have finished. Restore one to put it back on your
+            list — the XP you already earned stays yours either way.
           </p>
         </div>
 
@@ -33,40 +33,40 @@ function ArchivePage() {
 
       <div className="archive-summary-grid">
         <div className="archive-summary-card">
-          <span>Completed Quests</span>
+          <span>Quests finished</span>
           <strong>{completedTaskCount}</strong>
-          <p>Finished and saved</p>
+          <p>All time</p>
         </div>
 
         <div className="archive-summary-card">
-          <span>Mochi&apos;s XP</span>
+          <span>XP earned</span>
           <strong>{catProfile.totalXp}</strong>
-          <p>Total progress earned</p>
+          <p>50 XP per level</p>
         </div>
 
         <div className="archive-summary-card">
-          <span>Treats Earned</span>
+          <span>Treats banked</span>
           <strong>{catProfile.treats}</strong>
-          <p>Rewards for Mochi</p>
+          <p>Spend them in the closet</p>
         </div>
       </div>
 
       <section className="archive-note-card">
         <div className="archive-note-icon" aria-hidden="true"></div>
         <div>
-          <h2>Completed quests stay out of your way.</h2>
+          <h2>Finished work stays out of the way.</h2>
           <p>
-            The Tasks page only shows active tasks. This archive keeps your
-            finished work organised without making the main page feel crowded.
+            Your quest log only shows what is still open. Everything you have
+            completed lands here instead, so the list you work from stays short.
           </p>
         </div>
       </section>
 
       <TaskList
-        title="Completed History"
-        subtitle="An archive of everything you have already finished."
+        title="Completed quests"
+        subtitle="Most recently finished first."
         tasks={completedHistory}
-        emptyMessage="No completed tasks yet. Mochi is waiting for treats."
+        emptyMessage="Nothing finished yet. Complete a quest and it will land here."
         variant="completed"
         onRestoreTask={restoreTask}
         onDeleteTask={deleteTask}
