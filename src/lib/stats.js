@@ -1,6 +1,12 @@
 /**
  * Derived statistics for the Insights page.
  *
+ * Deliberately NOT named analytics.js: content blockers match any request
+ * path containing "analytics", so under `npm run dev` -- where Vite serves
+ * each module at its own URL -- the file silently fails to load and the
+ * whole app renders blank. Bundled builds are unaffected, which makes it a
+ * confusing thing to debug.
+ *
  * Everything here is a pure function of the task list — no dates are read
  * from the clock except through the injected `today` argument, so these
  * are straightforward to test.

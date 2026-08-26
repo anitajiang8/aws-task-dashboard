@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { addDays, startOfDay, toIsoDate } from "../../lib/dates";
-import { completedOn } from "../../lib/analytics";
+import { completedOn } from "../../lib/stats";
 import { isDone } from "../../lib/tasks";
 
 const WEEKS = 12;

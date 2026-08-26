@@ -15,7 +15,7 @@ import {
   computeStreak,
   onTimeStats,
   totalXpEarned,
-} from "../lib/analytics";
+} from "../lib/stats";
 import { useTaskStore } from "../store/taskStoreContext";
 
 const TREND_DAYS = 30;
