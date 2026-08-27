@@ -32,8 +32,8 @@ function StatusBanner() {
         <div>
           <strong>Changes aren&apos;t being saved.</strong>
           <p>
-            The last save failed. Your work is still on screen — it will retry
-            on your next change.
+            The last save failed. Your work is still on screen, and it will
+            retry on your next change.
           </p>
         </div>
       </div>

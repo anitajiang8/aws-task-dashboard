@@ -89,7 +89,7 @@ function TasksPage() {
       <PageHeader
         eyebrow="Quests"
         title="Your quest log"
-        subtitle="Everything still open, in one place. Priority sets the payout — high-priority quests are worth the most XP and treats."
+        subtitle="Everything still open, in one place. Priority sets the payout, so high-priority quests are worth the most XP and treats."
       />
 
       <TaskForm

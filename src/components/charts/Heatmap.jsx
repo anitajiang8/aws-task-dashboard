@@ -78,7 +78,7 @@ function Heatmap({ tasks, today = new Date() }) {
       <div className="heatmap-footer">
         <p className="heatmap-hint">
           {hover
-            ? `${hover.iso} — ${hover.count} ${
+            ? `${hover.iso}: ${hover.count} ${
                 hover.count === 1 ? "quest" : "quests"
               }`
             : "Each square is one day. Hover for the count."}

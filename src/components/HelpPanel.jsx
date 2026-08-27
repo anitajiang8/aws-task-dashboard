@@ -139,7 +139,7 @@ function HelpPanel({ onClose }) {
           <section className="help-section">
             <h3>4. Treats buy accessories</h3>
             <p>
-              Treats are the currency. Spend them in Mochi&apos;s closet — an
+              Treats are the currency. Spend them in Mochi&apos;s closet. An
               item shows up once you are the right level, and you still need
               enough treats to buy it.
             </p>
@@ -168,19 +168,19 @@ function HelpPanel({ onClose }) {
             <h3>Where things live</h3>
             <ul className="help-list">
               <li>
-                <strong>Home</strong> — Mochi, your totals, and what is due next.
+                <strong>Home</strong>: Mochi, your totals, and what is due next.
               </li>
               <li>
-                <strong>Tasks</strong> — add, filter, search, and complete quests.
+                <strong>Tasks</strong>: add, filter, search, and complete quests.
               </li>
               <li>
-                <strong>Calendar</strong> — active quests by due date.
+                <strong>Calendar</strong>: active quests by due date.
               </li>
               <li>
-                <strong>Archive</strong> — finished quests, restorable any time.
+                <strong>Archive</strong>: finished quests, restorable any time.
               </li>
               <li>
-                <strong>Mochi</strong> — her room and her closet.
+                <strong>Mochi</strong>: her room and her closet.
               </li>
             </ul>
           </section>
@@ -189,10 +189,10 @@ function HelpPanel({ onClose }) {
             <h3>Keyboard</h3>
             <ul className="help-list">
               <li>
-                <kbd>Esc</kbd> — close this panel or collapse the sidebar.
+                <kbd>Esc</kbd> closes this panel, or collapses the sidebar.
               </li>
               <li>
-                <kbd>Tab</kbd> — move between controls; the focused one is
+                <kbd>Tab</kbd> moves between controls. The focused one is
                 outlined.
               </li>
             </ul>

@@ -19,7 +19,7 @@ function ArchivePage() {
           <h1>The trophy shelf</h1>
           <p>
             Every quest you have finished. Restore one to put it back on your
-            list — the XP you already earned stays yours either way.
+            list. The XP you already earned stays yours either way.
           </p>
         </div>
 

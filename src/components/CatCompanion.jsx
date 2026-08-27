@@ -203,7 +203,7 @@ function CatCompanion({
 
         {equippedAccessories.length === 0 ? (
           <p className="closet-rod-empty">
-            Nothing on the rod yet — pick something from the shop below.
+            Nothing on the rod yet. Pick something from the shop below.
           </p>
         ) : (
           <div className="closet-rod-items">

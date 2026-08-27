@@ -21,7 +21,7 @@ function HomePage() {
       <PageHeader
         eyebrow="Dashboard"
         title="Purrductivity"
-        subtitle="A task list that pays you. Every quest you finish earns XP and treats — XP levels Mochi up, treats buy what she wears. New here? Open “How it works” in the sidebar."
+        subtitle="A task list that pays you. Every quest you finish earns XP and treats. XP levels Mochi up, treats buy what she wears. New here? Open “How it works” in the sidebar."
       />
 
       <div className="hero-grid">
